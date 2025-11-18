@@ -10,7 +10,21 @@ class Player {
     this.pX = x;
     this.pY = y;
     this.damage;
+    this.speed;
+    this.img;
+    this.HP = 100;
+  }
 
+  attack() {
+
+  }
+
+  move() {
+
+  }
+
+  interact() {
+    
   }
 }
 
