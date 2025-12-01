@@ -5,6 +5,36 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+let cords = {
+  lgX: 100,
+  lgY: 200,
+  hX: 650,
+  hY: 200,
+  enemyX: 700,
+  bgY: 744, //big guy Y cord
+  cY: 725, //charger y cord
+  jY: 714, //jumper y cord
+  rectX: 350,
+  rectY: 350,
+  w: 200,
+  h: 100,
+};
+
+let state = "startScreen";
+let character;
+let enemies = ["jumper", "big guy", "charger"];
+let enemySPD = 4;
+let enemyDirection = "left";
+let enemyJ;
+let enemyC;
+let enemyBG;
+let enemyJRight;
+let enemyCRight;
+let enemyBGRight;
+let opponent;
+let hornetImg;
+let lilGuyImg;
+
 let lgStand;//setting up character movement and idle animations
 let lgStandRight;
 let lgRun;
@@ -25,7 +55,7 @@ function preload() {//loading images and animations
   hornetRun = loadImage("images-folder/hornet-run.gif");
   hornetRunRight = loadImage("images-folder/hornet-run-right.gif");
   hornetIdle = loadImage("images-folder/hornet-idle.webp");
-  hornetIdleRight = loadImage("images-folder/hornet-idle-right.webp");
+  horentIdleRight = loadImage("images-folder/hornet-idle-right.webp");
   enemyBG = loadImage("images-folder/big-guy-walk.gif");
   enemyJ = loadImage("images-folder/jumper-walk.gif");
   enemyC = loadImage("images-folder/charger-walk.gif");
@@ -35,12 +65,12 @@ function preload() {//loading images and animations
 }
 
 class Player {
-  constructor(x, y) {
+  constructor(x, y, speed, damage) {
     this.pX = x;
     this.pY = y;
-    this.damage;
-    this.speed;
-    this.img;
+    this.damage = damage;
+    this.speed = speed;
+    //this.img = img;
     this.HP = 100;
   }
 
@@ -49,7 +79,7 @@ class Player {
   }
 
   move() {
-
+    
   }
 
   interact() {
@@ -57,7 +87,7 @@ class Player {
   }
 }
 
-let lilGuy;
+let lilGuy = new Player(lgX, lgY, 5, 25);
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
