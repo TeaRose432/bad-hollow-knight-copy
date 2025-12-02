@@ -46,22 +46,22 @@ let hornetRunRight;
 let direction = "right";//is used to know which way character should face when movement stops
 
 function preload() {//loading images and animations
-  lilGuyImg = loadImage("images-folder/lil-guy.png");
-  hornetImg = loadImage("images-folder/hornet.png");
-  lgStand = loadImage("images-folder/ghost-standing.gif");
-  lgStandRight = loadImage("images-folder/ghost-standing-right.gif");
-  lgRun = loadImage("images-folder/hollow-knight-walk.gif");
-  lgRunRight = loadImage("images-folder/hollow-knight-walk-right.gif");
-  hornetRun = loadImage("images-folder/hornet-run.gif");
-  hornetRunRight = loadImage("images-folder/hornet-run-right.gif");
-  hornetIdle = loadImage("images-folder/hornet-idle.webp");
-  horentIdleRight = loadImage("images-folder/hornet-idle-right.webp");
-  enemyBG = loadImage("images-folder/big-guy-walk.gif");
-  enemyJ = loadImage("images-folder/jumper-walk.gif");
-  enemyC = loadImage("images-folder/charger-walk.gif");
-  enemyBGRight = loadImage("images-folder/big-guy-walk-right.gif");
-  enemyJRight = loadImage("images-folder/jumper-walk-right.gif");
-  enemyCRight = loadImage("images-folder/charger-walk-right.gif");
+  lilGuyImg = loadImage("theImageFolder/lil-guy.png");
+  hornetImg = loadImage("theImageFolder/hornet.png");
+  lgStand = loadImage("theImageFolder/ghost-standing.gif");
+  lgStandRight = loadImage("theImageFolder/ghost-standing-right.gif");
+  lgRun = loadImage("theImageFolder/hollow-knight-walk.gif");
+  lgRunRight = loadImage("theImageFolder/hollow-knight-walk-right.gif");
+  hornetRun = loadImage("theImageFolder/hornet-run.gif");
+  hornetRunRight = loadImage("theImageFolder/hornet-run-right.gif");
+  hornetIdle = loadImage("theImageFolder/hornet-idle.webp");
+  horentIdleRight = loadImage("theImageFolder/hornet-idle-right.webp");
+  enemyBG = loadImage("theImageFolder/big-guy-walk.gif");
+  enemyJ = loadImage("theImageFolder/jumper-walk.gif");
+  enemyC = loadImage("theImageFolder/charger-walk.gif");
+  enemyBGRight = loadImage("theImageFolder/big-guy-walk-right.gif");
+  enemyJRight = loadImage("theImageFolder/jumper-walk-right.gif");
+  enemyCRight = loadImage("theImageFolder/charger-walk-right.gif");
 }
 
 class Player {
@@ -79,15 +79,33 @@ class Player {
   }
 
   move() {
-    
+    if (keyIsDown(68)) {//pressed d
+      this.pX += this.speed;
+      image(lgRunRight, this.pX, this.pY, lgRunRight.width*0.4, lgRunRight.height*0.4);
+      direction = "right";
+    }
+    else if (keyIsDown(65)) {//pressed a
+      this.pX -= this.speed;
+      image(lgRun, this.pX, this.pY, lgRun.width*0.4, lgRun.height*0.4);
+      direction = "left";
+    }
   }
 
   interact() {
     
   }
+
+  display() {
+    if (direction === "left") {
+      image(lgStand, this.pX, this.pY, lgStand.width*0.4, lgStand.height*0.4);
+    }
+    if (direction === "right") {
+      image(lgStandRight, this.pX, this.pY, lgStandRight.width*0.4, lgStandRight.height*0.4);
+    }
+  }
 }
 
-let lilGuy = new Player(lgX, lgY, 5, 25);
+let lilGuy = new Player(cords.lgX, cords.lgY, 5, 25);
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -95,5 +113,6 @@ function setup() {
 
 function draw() {
   background(220);
-  circle(mouseX, mouseY, 100);
+  lilGuy.display();
+  lilGuy.move();
 }
