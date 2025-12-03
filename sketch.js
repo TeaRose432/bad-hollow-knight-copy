@@ -22,8 +22,6 @@ let cords = {
 
 let state = "startScreen";
 let character;
-let enemies = ["jumper", "big guy", "charger"];
-let enemySPD = 4;
 let enemyDirection = "left";
 let enemyJ;
 let enemyC;
@@ -31,7 +29,6 @@ let enemyBG;
 let enemyJRight;
 let enemyCRight;
 let enemyBGRight;
-let opponent;
 let hornetImg;
 let lilGuyImg;
 
@@ -70,7 +67,6 @@ class Player {
     this.pY = y;
     this.damage = damage;
     this.speed = speed;
-    //this.img = img;
     this.HP = 100;
   }
 
@@ -89,10 +85,6 @@ class Player {
       image(lgRun, this.pX, this.pY, lgRun.width*0.4, lgRun.height*0.4);
       direction = "left";
     }
-  }
-
-  interact() {
-    
   }
 
   display() {
@@ -115,4 +107,21 @@ function draw() {
   background(220);
   lilGuy.display();
   lilGuy.move();
+}
+
+function showButton() { //shows the begin button
+  stroke("black");
+  fill("gray");
+  rect(cords.rectX, cords.rectY, cords.w, cords.h);
+}
+
+function Choices() {//lets player decide which character to play
+  if (state === "characterChoice") {
+    image(lilGuyImg, cords.lgX, cords.lgY, lilGuyImg.width*0.2, lilGuyImg.height*0.2);
+    image(hornetImg, cords.hX, cords.hY, hornetImg.width*0.2, hornetImg.height*0.23);
+  }
+}
+
+function interactable() {
+
 }
