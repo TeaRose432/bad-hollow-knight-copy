@@ -70,6 +70,8 @@ class Player {
     this.HP = 100;
   }
 
+
+
   attack() {
 
   }
@@ -95,18 +97,26 @@ class Player {
       image(lgStandRight, this.pX, this.pY, lgStandRight.width*0.4, lgStandRight.height*0.4);
     }
   }
+
+  update() {
+    this.display();
+    this.move();
+    this.attack();
+  }
 }
 
-let lilGuy = new Player(cords.lgX, cords.lgY, 5, 25);
+let LilGuy;
+let Hornet;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(900, 900);
 }
 
 function draw() {
   background(220);
-  lilGuy.display();
-  lilGuy.move();
+  if (state === "play") {
+    LilGuy.update();
+  }
 }
 
 function showButton() { //shows the begin button
@@ -119,6 +129,27 @@ function Choices() {//lets player decide which character to play
   if (state === "characterChoice") {
     image(lilGuyImg, cords.lgX, cords.lgY, lilGuyImg.width*0.2, lilGuyImg.height*0.2);
     image(hornetImg, cords.hX, cords.hY, hornetImg.width*0.2, hornetImg.height*0.23);
+  }
+}
+
+function mousePressed() {
+  if (state === "startScreen") {//checks if start button is pressed
+    if (mouseX >= cords.rectX && mouseX <= cords.rectX + cords.w && mouseY >= cords.rectY && mouseY <= cords.rectY + cords.h) {
+      state = "characterChoice";
+    }
+  }
+  if (state === "characterChoice") {//checks which character is chosen
+    if (mouseX >= cords.lgX && mouseX <= cords.lgX + lilGuyImg.width*0.2 && mouseY >= cords.lgY && mouseY <= cords.lgY + lilGuyImg.height*0.2) {
+      LilGuy = new Player(cords.lgX, cords.lgY, 5, 25);
+      state = "play";
+    }
+    if (mouseX >= cords.hX && mouseX <= cords.hX + hornetImg.width*0.2 && mouseY >= cords.hY && mouseY <= cords.hY + hornetImg.height*0.23) {
+      character = "hornet";
+      Hornet = new Player(cords.hX, cords.hY, 9, 15);
+      cords.hX = 450;
+      cords.hY = 740;
+      state = "play";
+    }
   }
 }
 
