@@ -21,7 +21,7 @@ let cords = {
 };
 
 let state = "startScreen";
-let character;
+let character = "";
 let enemyDirection = "left";
 let enemyJ;
 let enemyC;
@@ -77,30 +77,54 @@ class Player {
   }
 
   move() {
-    if (keyIsDown(68)) {//pressed d
-      this.pX += this.speed;
-      image(lgRunRight, this.pX, this.pY, lgRunRight.width*0.4, lgRunRight.height*0.4);
-      direction = "right";
+    if (character === "LilGuy") {
+      if (keyIsDown(68)) {//pressed d
+        this.pX += this.speed;
+        image(lgRunRight, this.pX, this.pY, lgRunRight.width*0.4, lgRunRight.height*0.4);
+        direction = "right";
+      }
+      else if (keyIsDown(65)) {//pressed a
+        this.pX -= this.speed;
+        image(lgRun, this.pX, this.pY, lgRun.width*0.4, lgRun.height*0.4);
+        direction = "left";
+      }
     }
-    else if (keyIsDown(65)) {//pressed a
-      this.pX -= this.speed;
-      image(lgRun, this.pX, this.pY, lgRun.width*0.4, lgRun.height*0.4);
-      direction = "left";
+    if (character === "Hornet") {
+      if (keyIsDown(68)) {//pressed d
+        this.pX += this.speed;
+        image(hornetRunRight, this.pX, this.pY);
+        direction = "right";
+      }
+      else if (keyIsDown(65)) {//pressed a
+        this.pX -= this.speed;
+        image(hornetRun, this.pX, this.pY);
+        direction = "left";
+      }
     }
   }
 
   display() {
-    if (direction === "left") {
-      image(lgStand, this.pX, this.pY, lgStand.width*0.4, lgStand.height*0.4);
+    if (character === "LilGuy") {
+      if (direction === "left") {
+        image(lgStand, this.pX, this.pY, lgStand.width*0.4, lgStand.height*0.4);
+      }
+      if (direction === "right") {
+        image(lgStandRight, this.pX, this.pY, lgStandRight.width*0.4, lgStandRight.height*0.4);
+      }
     }
-    if (direction === "right") {
-      image(lgStandRight, this.pX, this.pY, lgStandRight.width*0.4, lgStandRight.height*0.4);
+    if (character === "Hornet") {
+      if (direction === "left") {
+        image(hornetIdle, this.pX, this.pY, hornetIdle.width*0.4, hornetIdle.height*0.4);
+      }
+      if (direction === "right") {
+        image(horentIdleRight, this.pX, this.pY, horentIdleRight.width*0.4, horentIdleRight.height*0.4);
+      }
     }
   }
 
   update() {
-    this.display();
     this.move();
+    this.display();
     this.attack();
   }
 }
@@ -113,9 +137,24 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  if (state === "startScreen") {
+    background(220);
+    showButton();
+  }
+  if (state === "characterChoice") {
+    background(220);
+    Choices();
+  }
+
   if (state === "play") {
-    LilGuy.update();
+    if (character === "LilGuy") {
+      background(220);
+      LilGuy.update();
+    }
+    if (character === "Hornet") {
+      background(220);
+      Hornet.update();
+    }
   }
 }
 
@@ -141,13 +180,12 @@ function mousePressed() {
   if (state === "characterChoice") {//checks which character is chosen
     if (mouseX >= cords.lgX && mouseX <= cords.lgX + lilGuyImg.width*0.2 && mouseY >= cords.lgY && mouseY <= cords.lgY + lilGuyImg.height*0.2) {
       LilGuy = new Player(cords.lgX, cords.lgY, 5, 25);
+      character = "LilGuy";
       state = "play";
     }
     if (mouseX >= cords.hX && mouseX <= cords.hX + hornetImg.width*0.2 && mouseY >= cords.hY && mouseY <= cords.hY + hornetImg.height*0.23) {
-      character = "hornet";
       Hornet = new Player(cords.hX, cords.hY, 9, 15);
-      cords.hX = 450;
-      cords.hY = 740;
+      character = "Hornet";
       state = "play";
     }
   }
