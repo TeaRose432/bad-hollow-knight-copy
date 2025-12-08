@@ -73,6 +73,11 @@ class Player {
 
 
   attack() {
+    if (character === "LilGuy") {
+      if (keyIsDown('f')) {
+        
+      }
+    }
 
   }
 
@@ -88,6 +93,14 @@ class Player {
         image(lgRun, this.pX, this.pY, lgRun.width*0.4, lgRun.height*0.4);
         direction = "left";
       }
+      else {
+        if (direction === "left") {
+          image(lgStand, this.pX, this.pY, lgStand.width*0.4, lgStand.height*0.4);
+        }
+        if (direction === "right") {
+          image(lgStandRight, this.pX, this.pY, lgStandRight.width*0.4, lgStandRight.height*0.4);
+        }
+      }
     }
     if (character === "Hornet") {
       if (keyIsDown(68)) {//pressed d
@@ -100,31 +113,19 @@ class Player {
         image(hornetRun, this.pX, this.pY);
         direction = "left";
       }
-    }
-  }
-
-  display() {
-    if (character === "LilGuy") {
-      if (direction === "left") {
-        image(lgStand, this.pX, this.pY, lgStand.width*0.4, lgStand.height*0.4);
-      }
-      if (direction === "right") {
-        image(lgStandRight, this.pX, this.pY, lgStandRight.width*0.4, lgStandRight.height*0.4);
-      }
-    }
-    if (character === "Hornet") {
-      if (direction === "left") {
-        image(hornetIdle, this.pX, this.pY, hornetIdle.width*0.4, hornetIdle.height*0.4);
-      }
-      if (direction === "right") {
-        image(horentIdleRight, this.pX, this.pY, horentIdleRight.width*0.4, horentIdleRight.height*0.4);
+      else {
+        if (direction === "left") {
+          image(hornetIdle, this.pX, this.pY, hornetIdle.width*0.4, hornetIdle.height*0.4);
+        }
+        if (direction === "right") {
+          image(horentIdleRight, this.pX, this.pY, horentIdleRight.width*0.4, horentIdleRight.height*0.4);
+        }
       }
     }
   }
 
   update() {
     this.move();
-    this.display();
     this.attack();
   }
 }
