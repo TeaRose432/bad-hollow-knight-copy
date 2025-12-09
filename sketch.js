@@ -40,6 +40,8 @@ let hornetIdle;
 let horentIdleRight;
 let hornetRun;
 let hornetRunRight;
+let isAttacking = false;
+let lgAttackRight;
 let direction = "right";//is used to know which way character should face when movement stops
 
 function preload() {//loading images and animations
@@ -49,6 +51,7 @@ function preload() {//loading images and animations
   lgStandRight = loadImage("theImageFolder/ghost-standing-right.gif");
   lgRun = loadImage("theImageFolder/hollow-knight-walk.gif");
   lgRunRight = loadImage("theImageFolder/hollow-knight-walk-right.gif");
+  lgAttackRight = loadImage("theImageFolder/lil-guy-attack-right.gif");
   hornetRun = loadImage("theImageFolder/hornet-run.gif");
   hornetRunRight = loadImage("theImageFolder/hornet-run-right.gif");
   hornetIdle = loadImage("theImageFolder/hornet-idle.webp");
@@ -73,12 +76,10 @@ class Player {
 
 
   attack() {
-    if (character === "LilGuy") {
-      if (keyIsDown('f')) {
-        
-      }
+    if (isAttacking === true) {
+      image(lgAttackRight, this.pX, this.pY);
+      isAttacking = false;
     }
-
   }
 
   move() {
@@ -126,7 +127,7 @@ class Player {
 
   update() {
     this.move();
-    this.attack();
+    //this.attack();
   }
 }
 
@@ -151,6 +152,7 @@ function draw() {
     if (character === "LilGuy") {
       background(220);
       LilGuy.update();
+      LilGuy.attack();
     }
     if (character === "Hornet") {
       background(220);
@@ -192,6 +194,9 @@ function mousePressed() {
   }
 }
 
-function interactable() {
-
+function keyPressed() {
+  console.log(key);
+  if (key === 'f') {
+    LilGuy.attack();
+  }
 }
