@@ -76,9 +76,15 @@ class Player {
 
 
   attack() {
-    if (isAttacking === true) {
-      image(lgAttackRight, this.pX, this.pY);
-      isAttacking = false;
+    if (keyIsDown(70) === true) {
+      if (character === "LilGuy") {
+        // the plus 5 and plus 3 is to make the attack gif line up with the other gifs, so it isnt off to the side
+        // the difference in gif size causes the attack to not line up with the others
+        image(lgAttackRight, this.pX+5, this.pY+3, lgAttackRight.width*0.9, lgAttackRight.height*0.9);
+      }
+      if (character === "Hornet") {
+        
+      }
     }
   }
 
@@ -127,7 +133,7 @@ class Player {
 
   update() {
     this.move();
-    //this.attack();
+    this.attack();
   }
 }
 
@@ -152,7 +158,7 @@ function draw() {
     if (character === "LilGuy") {
       background(220);
       LilGuy.update();
-      LilGuy.attack();
+      //LilGuy.attack();
     }
     if (character === "Hornet") {
       background(220);
@@ -194,9 +200,4 @@ function mousePressed() {
   }
 }
 
-function keyPressed() {
-  console.log(key);
-  if (key === 'f') {
-    LilGuy.attack();
-  }
-}
+
