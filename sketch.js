@@ -41,6 +41,7 @@ let horentIdleRight;
 let hornetRun;
 let hornetRunRight;
 let isAttacking = false;
+let hornetAttack;
 let lgAttackRight;
 let direction = "right";//is used to know which way character should face when movement stops
 
@@ -56,6 +57,7 @@ function preload() {//loading images and animations
   hornetRunRight = loadImage("theImageFolder/hornet-run-right.gif");
   hornetIdle = loadImage("theImageFolder/hornet-idle.webp");
   horentIdleRight = loadImage("theImageFolder/hornet-idle-right.webp");
+  hornetAttack = loadImage("theImageFolder/hornet-attack.gif");
   enemyBG = loadImage("theImageFolder/big-guy-walk.gif");
   enemyJ = loadImage("theImageFolder/jumper-walk.gif");
   enemyC = loadImage("theImageFolder/charger-walk.gif");
@@ -73,59 +75,60 @@ class Player {
     this.HP = 100;
   }
 
-
-
   attack() {
     if (keyIsDown(70) === true) {
+
       if (character === "LilGuy") {
         // the plus 5 and plus 3 is to make the attack gif line up with the other gifs, so it isnt off to the side
         // the difference in gif size causes the attack to not line up with the others
-        image(lgAttackRight, this.pX+5, this.pY+3, lgAttackRight.width*0.9, lgAttackRight.height*0.9);
+        image(lgAttackRight, this.pX+5, this.pY+3, lgAttackRight.width*0.85, lgAttackRight.height*0.85);
       }
       if (character === "Hornet") {
-        
+        image(hornetAttack, this.pX, this.pY, hornetAttack.width*0.6, hornetAttack.height*0.6);
       }
     }
   }
 
   move() {
-    if (character === "LilGuy") {
-      if (keyIsDown(68)) {//pressed d
-        this.pX += this.speed;
-        image(lgRunRight, this.pX, this.pY, lgRunRight.width*0.4, lgRunRight.height*0.4);
-        direction = "right";
-      }
-      else if (keyIsDown(65)) {//pressed a
-        this.pX -= this.speed;
-        image(lgRun, this.pX, this.pY, lgRun.width*0.4, lgRun.height*0.4);
-        direction = "left";
-      }
-      else {
-        if (direction === "left") {
-          image(lgStand, this.pX, this.pY, lgStand.width*0.4, lgStand.height*0.4);
+    if (keyIsDown(70) === false) {
+      if (character === "LilGuy") {
+        if (keyIsDown(68)) {//pressed d
+          this.pX += this.speed;
+          image(lgRunRight, this.pX, this.pY, lgRunRight.width*0.4, lgRunRight.height*0.4);
+          direction = "right";
         }
-        if (direction === "right") {
-          image(lgStandRight, this.pX, this.pY, lgStandRight.width*0.4, lgStandRight.height*0.4);
+        else if (keyIsDown(65)) {//pressed a
+          this.pX -= this.speed;
+          image(lgRun, this.pX, this.pY, lgRun.width*0.4, lgRun.height*0.4);
+          direction = "left";
+        }
+        else {
+          if (direction === "left") {
+            image(lgStand, this.pX, this.pY, lgStand.width*0.4, lgStand.height*0.4);
+          }
+          if (direction === "right") {
+            image(lgStandRight, this.pX, this.pY, lgStandRight.width*0.4, lgStandRight.height*0.4);
+          }
         }
       }
-    }
-    if (character === "Hornet") {
-      if (keyIsDown(68)) {//pressed d
-        this.pX += this.speed;
-        image(hornetRunRight, this.pX, this.pY);
-        direction = "right";
-      }
-      else if (keyIsDown(65)) {//pressed a
-        this.pX -= this.speed;
-        image(hornetRun, this.pX, this.pY);
-        direction = "left";
-      }
-      else {
-        if (direction === "left") {
-          image(hornetIdle, this.pX, this.pY, hornetIdle.width*0.4, hornetIdle.height*0.4);
+      if (character === "Hornet") {
+        if (keyIsDown(68)) {//pressed d
+          this.pX += this.speed;
+          image(hornetRunRight, this.pX, this.pY);
+          direction = "right";
         }
-        if (direction === "right") {
-          image(horentIdleRight, this.pX, this.pY, horentIdleRight.width*0.4, horentIdleRight.height*0.4);
+        else if (keyIsDown(65)) {//pressed a
+          this.pX -= this.speed;
+          image(hornetRun, this.pX, this.pY);
+          direction = "left";
+        }
+        else {
+          if (direction === "left") {
+            image(hornetIdle, this.pX, this.pY, hornetIdle.width*0.4, hornetIdle.height*0.4);
+          }
+          if (direction === "right") {
+            image(horentIdleRight, this.pX, this.pY, horentIdleRight.width*0.4, horentIdleRight.height*0.4);
+          }
         }
       }
     }
@@ -135,6 +138,10 @@ class Player {
     this.move();
     this.attack();
   }
+}
+
+class Enemy {
+
 }
 
 let LilGuy;
@@ -200,4 +207,6 @@ function mousePressed() {
   }
 }
 
+function hitBoxes() {
 
+}
