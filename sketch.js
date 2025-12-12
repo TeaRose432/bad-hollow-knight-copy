@@ -22,6 +22,7 @@ let cords = {
 
 let state = "startScreen";
 let character = "";
+let currentGif = "";
 let enemyDirection = "left";
 let enemyJ;
 let enemyC;
@@ -89,6 +90,13 @@ class Player {
     }
   }
 
+  hitBoxes() {
+    if (character === "LilGuy") {
+      circle(this.pX+25, this.pY+30, 20);
+      rect(this.pX+25, this.pY+40, 20, 20);
+    }
+  }
+
   move() {
     if (keyIsDown(70) === false) {
       if (character === "LilGuy") {
@@ -99,7 +107,7 @@ class Player {
         }
         else if (keyIsDown(65)) {//pressed a
           this.pX -= this.speed;
-          image(lgRun, this.pX, this.pY, lgRun.width*0.4, lgRun.height*0.4);
+          image(lgRun, this.pX+5, this.pY, lgRun.width*0.4, lgRun.height*0.4);
           direction = "left";
         }
         else {
@@ -120,14 +128,17 @@ class Player {
         else if (keyIsDown(65)) {//pressed a
           this.pX -= this.speed;
           image(hornetRun, this.pX, this.pY);
+          currentGif = "hornetRunLeft";
           direction = "left";
         }
         else {
           if (direction === "left") {
             image(hornetIdle, this.pX, this.pY, hornetIdle.width*0.4, hornetIdle.height*0.4);
+            currentGif = "hornetIdleLeft";
           }
           if (direction === "right") {
             image(horentIdleRight, this.pX, this.pY, horentIdleRight.width*0.4, horentIdleRight.height*0.4);
+            currentGif = "hornetIdleRight";
           }
         }
       }
@@ -165,7 +176,7 @@ function draw() {
     if (character === "LilGuy") {
       background(220);
       LilGuy.update();
-      //LilGuy.attack();
+      LilGuy.hitBoxes();
     }
     if (character === "Hornet") {
       background(220);
@@ -197,16 +208,21 @@ function mousePressed() {
     if (mouseX >= cords.lgX && mouseX <= cords.lgX + lilGuyImg.width*0.2 && mouseY >= cords.lgY && mouseY <= cords.lgY + lilGuyImg.height*0.2) {
       LilGuy = new Player(cords.lgX, cords.lgY, 5, 25);
       character = "LilGuy";
+      currentGif = "lilGuyIdleRight";
       state = "play";
     }
     if (mouseX >= cords.hX && mouseX <= cords.hX + hornetImg.width*0.2 && mouseY >= cords.hY && mouseY <= cords.hY + hornetImg.height*0.23) {
       Hornet = new Player(cords.hX, cords.hY, 9, 15);
       character = "Hornet";
+      currentGif = "hornetIdleRight";
       state = "play";
     }
   }
 }
 
 function hitBoxes() {
+  if (character === "LilGuy") {
+    circle(this.pX, this.pY-4, 7);
+  }
 
 }
