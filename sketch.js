@@ -11,9 +11,7 @@ let cords = {
   hX: 650,
   hY: 200,
   enemyX: 700,
-  bgY: 744, //big guy Y cord
-  cY: 725, //charger y cord
-  jY: 714, //jumper y cord
+  enemyY: 300,
   rectX: 350,
   rectY: 350,
   w: 200,
@@ -22,8 +20,8 @@ let cords = {
 
 let state = "startScreen";
 let character = "";
-let currentGif = "";
 let enemyDirection = "left";
+let opponent = "";
 let enemyJ;
 let enemyC;
 let enemyBG;
@@ -71,42 +69,45 @@ class Player {
   constructor(x, y, speed, damage) {
     this.pX = x;
     this.pY = y;
-    this.damage = damage;
-    this.speed = speed;
-    this.HP = 100;
+    this.playerDamage = damage;
+    this.playerSpeed = speed;
+    this.playerHP = 100;
   }
 
-  attack() {
+  playerAttack() {
     if (keyIsDown(70) === true) {
-
       if (character === "LilGuy") {
         // the plus 5 and plus 3 is to make the attack gif line up with the other gifs, so it isnt off to the side
         // the difference in gif size causes the attack to not line up with the others
         image(lgAttackRight, this.pX+5, this.pY+3, lgAttackRight.width*0.85, lgAttackRight.height*0.85);
       }
       if (character === "Hornet") {
-        image(hornetAttack, this.pX, this.pY, hornetAttack.width*0.6, hornetAttack.height*0.6);
+        image(hornetAttack, this.pX-20, this.pY, hornetAttack.width*0.6, hornetAttack.height*0.6);
       }
     }
   }
 
-  hitBoxes() {
+  playerHitBoxes() {
     if (character === "LilGuy") {
       circle(this.pX+25, this.pY+30, 20);
-      rect(this.pX+25, this.pY+40, 20, 20);
+      rect(this.pX+20, this.pY+40, 10, 15);
+    }
+    if (character === "Hornet") {//fix rect hitbox :,) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      circle(this.pX+25, this.pY+35, 20);
+      //rect(this.pX+30, this.pY+30, 15, 15);
     }
   }
 
-  move() {
+  playerMove() {
     if (keyIsDown(70) === false) {
       if (character === "LilGuy") {
         if (keyIsDown(68)) {//pressed d
-          this.pX += this.speed;
+          this.pX += this.playerSpeed;
           image(lgRunRight, this.pX, this.pY, lgRunRight.width*0.4, lgRunRight.height*0.4);
           direction = "right";
         }
         else if (keyIsDown(65)) {//pressed a
-          this.pX -= this.speed;
+          this.pX -= this.playerSpeed;
           image(lgRun, this.pX+5, this.pY, lgRun.width*0.4, lgRun.height*0.4);
           direction = "left";
         }
@@ -121,23 +122,23 @@ class Player {
       }
       if (character === "Hornet") {
         if (keyIsDown(68)) {//pressed d
-          this.pX += this.speed;
-          image(hornetRunRight, this.pX, this.pY);
+          this.pX += this.playerSpeed;
+          image(hornetRunRight, this.pX-70, this.pY);
           direction = "right";
         }
         else if (keyIsDown(65)) {//pressed a
-          this.pX -= this.speed;
-          image(hornetRun, this.pX, this.pY);
+          this.pX -= this.playerSpeed;
+          image(hornetRun, this.pX-30, this.pY);
           currentGif = "hornetRunLeft";
           direction = "left";
         }
         else {
           if (direction === "left") {
-            image(hornetIdle, this.pX, this.pY, hornetIdle.width*0.4, hornetIdle.height*0.4);
+            image(hornetIdle, this.pX-20, this.pY, hornetIdle.width*0.4, hornetIdle.height*0.4);
             currentGif = "hornetIdleLeft";
           }
           if (direction === "right") {
-            image(horentIdleRight, this.pX, this.pY, horentIdleRight.width*0.4, horentIdleRight.height*0.4);
+            image(horentIdleRight, this.pX-10, this.pY, horentIdleRight.width*0.4, horentIdleRight.height*0.4);
             currentGif = "hornetIdleRight";
           }
         }
@@ -146,20 +147,69 @@ class Player {
   }
 
   update() {
-    this.move();
-    this.attack();
+    this.playerMove();
+    this.playerAttack();
+    this.playerHitBoxes();
   }
 }
 
 class Enemy {
+  constructor(x, y, speed, damage) {
+    this.eX = x;
+    this.eY = y;
+    this.enemySpeed = speed;
+    this.enemyDamage = damage;
+    this.enemyHP = 100;
+  }
+
+  enemyMove() {
+    if (this.eX <= 5) {
+      enemyDirection = "right";
+    }
+    if (this.eX >= 830) {
+      enemyDirection = "left";
+    }
+    if (enemyDirection === "left") {
+      if (opponent === "big guy") {
+        this.eX -= this.enemySpeed;
+        image(enemyBG, this.eX, this.eY, enemyBG.width*0.4, enemyBG.height*0.4);
+      }
+      if (opponent === "charger") {
+        this.eX -= this.enemySpeed;
+        image(enemyC, this.eX, this.eY, enemyC.width*0.4, enemyC.height*0.4);
+      }
+      if (opponent === "jumper") {
+        this.eX -= this.enemySpeed;
+        image(enemyJ, this.eX, this.eY, enemyJ.width*0.4, enemyJ.height*0.4);
+      }
+    }
+    if (enemyDirection === "right") {
+      if (opponent === "big guy") {
+        this.eX += this.enemySpeed;
+        image(enemyBGRight, this.eX, this.eY, enemyBGRight.width*0.4, enemyBGRight.height*0.4);
+      }
+      if (opponent === "charger") {
+        this.eX += this.enemySpeed;
+        image(enemyCRight, this.eX, this.eY, enemyCRight.width*0.4, enemyCRight.height*0.4);
+      }
+      if (opponent === "jumper") {
+        this.eX += this.enemySpeed;
+        image(enemyJRight, this.eX, this.eY, enemyJRight.width*0.4, enemyJRight.height*0.4);
+      }
+    }
+  }
 
 }
 
 let LilGuy;
 let Hornet;
+let Charger;
+
 
 function setup() {
   createCanvas(900, 900);
+  Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
+  opponent = "charger";
 }
 
 function draw() {
@@ -175,8 +225,8 @@ function draw() {
   if (state === "play") {
     if (character === "LilGuy") {
       background(220);
+      Charger.enemyMove();
       LilGuy.update();
-      LilGuy.hitBoxes();
     }
     if (character === "Hornet") {
       background(220);
