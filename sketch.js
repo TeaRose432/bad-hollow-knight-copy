@@ -172,11 +172,11 @@ class Enemy {
     if (enemyDirection === "left") {
       if (opponent === "big guy") {
         this.eX -= this.enemySpeed;
-        image(enemyBG, this.eX, this.eY, enemyBG.width*0.4, enemyBG.height*0.4);
+        image(enemyBG, this.eX, this.eY, enemyBG.width*0.35, enemyBG.height*0.35);
       }
       if (opponent === "charger") {
         this.eX -= this.enemySpeed;
-        image(enemyC, this.eX, this.eY, enemyC.width*0.4, enemyC.height*0.4);
+        image(enemyC, this.eX, this.eY, enemyC.width*0.35, enemyC.height*0.35);
       }
       if (opponent === "jumper") {
         this.eX -= this.enemySpeed;
@@ -186,11 +186,11 @@ class Enemy {
     if (enemyDirection === "right") {
       if (opponent === "big guy") {
         this.eX += this.enemySpeed;
-        image(enemyBGRight, this.eX, this.eY, enemyBGRight.width*0.4, enemyBGRight.height*0.4);
+        image(enemyBGRight, this.eX, this.eY, enemyBGRight.width*0.35, enemyBGRight.height*0.35);
       }
       if (opponent === "charger") {
         this.eX += this.enemySpeed;
-        image(enemyCRight, this.eX, this.eY, enemyCRight.width*0.4, enemyCRight.height*0.4);
+        image(enemyCRight, this.eX+10, this.eY, enemyCRight.width*0.35, enemyCRight.height*0.35);
       }
       if (opponent === "jumper") {
         this.eX += this.enemySpeed;
@@ -199,17 +199,30 @@ class Enemy {
     }
   }
 
+  enemyHitBoxes() {
+    if (opponent === "charger") {
+      circle(this.eX+30, this.eY+40, 35);
+    }
+    if (opponent === "big guy") {
+      circle(this.eX+20, this.eY+25, 35);
+    }
+  }
+
 }
 
 let LilGuy;
 let Hornet;
 let Charger;
+let Jumper;
+let BigGuy;
 
 
 function setup() {
   createCanvas(900, 900);
   Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
-  opponent = "charger";
+  Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
+  BigGuy = new Enemy(cords.enemyX, cords.enemyY, 3, 15);
+  opponent = "big guy";
 }
 
 function draw() {
@@ -226,6 +239,7 @@ function draw() {
     if (character === "LilGuy") {
       background(220);
       Charger.enemyMove();
+      Charger.enemyHitBoxes();
       LilGuy.update();
     }
     if (character === "Hornet") {
