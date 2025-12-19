@@ -180,7 +180,7 @@ class Enemy {
       }
       if (opponent === "jumper") {
         this.eX -= this.enemySpeed;
-        image(enemyJ, this.eX, this.eY, enemyJ.width*0.4, enemyJ.height*0.4);
+        image(enemyJ, this.eX, this.eY, enemyJ.width*0.35, enemyJ.height*0.35);
       }
     }
     if (enemyDirection === "right") {
@@ -194,7 +194,7 @@ class Enemy {
       }
       if (opponent === "jumper") {
         this.eX += this.enemySpeed;
-        image(enemyJRight, this.eX, this.eY, enemyJRight.width*0.4, enemyJRight.height*0.4);
+        image(enemyJRight, this.eX, this.eY, enemyJRight.width*0.35, enemyJRight.height*0.35);
       }
     }
   }
@@ -205,6 +205,9 @@ class Enemy {
     }
     if (opponent === "big guy") {
       circle(this.eX+20, this.eY+25, 35);
+    }
+    if (opponent === "jumper") {
+      circle(this.eX, this.eY, 25);
     }
   }
 
@@ -222,7 +225,7 @@ function setup() {
   Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
   Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
   BigGuy = new Enemy(cords.enemyX, cords.enemyY, 3, 15);
-  opponent = "big guy";
+  opponent = "jumper";
 }
 
 function draw() {
