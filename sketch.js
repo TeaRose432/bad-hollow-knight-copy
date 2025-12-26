@@ -2,8 +2,10 @@
 // Calli Sperrer
 // Due Jan 19 2026
 //
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+//I used ps.j5 refernece website to learn parameters and what functions need/do.
+//I also used to to help decide what to use between choices like mousePressed or mouseClicked.
+//used for functions such as but not limited to incase i forgot to add them:
+//triangle, keyIsDown, mousePressed, keyPressed, image
 
 let cords = {
   lgX: 100,
@@ -41,6 +43,8 @@ let hornetRun;
 let hornetRunRight;
 let isAttacking = false;
 let hornetAttack;
+let hornetAttackRight;
+let lgAttack;
 let lgAttackRight;
 let direction = "right";//is used to know which way character should face when movement stops
 
@@ -51,12 +55,14 @@ function preload() {//loading images and animations
   lgStandRight = loadImage("theImageFolder/ghost-standing-right.gif");
   lgRun = loadImage("theImageFolder/hollow-knight-walk.gif");
   lgRunRight = loadImage("theImageFolder/hollow-knight-walk-right.gif");
+  lgAttack = loadImage("theImageFolder/lil-guy-attack.gif");
   lgAttackRight = loadImage("theImageFolder/lil-guy-attack-right.gif");
   hornetRun = loadImage("theImageFolder/hornet-run.gif");
   hornetRunRight = loadImage("theImageFolder/hornet-run-right.gif");
   hornetIdle = loadImage("theImageFolder/hornet-idle.webp");
   horentIdleRight = loadImage("theImageFolder/hornet-idle-right.webp");
   hornetAttack = loadImage("theImageFolder/hornet-attack.gif");
+  hornetAttackRight = loadImage("theImageFolder/hornet-attack-right.gif");
   enemyBG = loadImage("theImageFolder/big-guy-walk.gif");
   enemyJ = loadImage("theImageFolder/jumper-walk.gif");
   enemyC = loadImage("theImageFolder/charger-walk.gif");
@@ -77,24 +83,61 @@ class Player {
   playerAttack() {
     if (keyIsDown(70) === true) {
       if (character === "LilGuy") {
-        // the plus 5 and plus 3 is to make the attack gif line up with the other gifs, so it isnt off to the side
-        // the difference in gif size causes the attack to not line up with the others
-        image(lgAttackRight, this.pX+5, this.pY+3, lgAttackRight.width*0.85, lgAttackRight.height*0.85);
+        if (direction === "left") {
+          image(lgAttack, this.pX+5, this.pY+3, lgAttack.width*0.85, lgAttack.height*0.85);
+        }
+        if (direction === "right") {
+          image(lgAttackRight, this.pX+5, this.pY+3, lgAttackRight.width*0.85, lgAttackRight.height*0.85);
+        }
       }
+
       if (character === "Hornet") {
-        image(hornetAttack, this.pX-20, this.pY, hornetAttack.width*0.6, hornetAttack.height*0.6);
+        if (direction === "left") {
+          image(hornetAttack, this.pX-20, this.pY, hornetAttack.width*0.6, hornetAttack.height*0.6);
+        }
+        if (direction === "right") {
+          image(hornetAttackRight, this.pX, this.pY, hornetAttackRight.width*0.6, hornetAttackRight.height*0.6);
+        }
       }
     }
   }
 
   playerHitBoxes() {
-    if (character === "LilGuy") {
-      circle(this.pX+25, this.pY+30, 20);
-      rect(this.pX+20, this.pY+40, 10, 15);
+    if (keyIsDown(70) === false) {
+      if (character === "LilGuy") {
+        circle(this.pX+25, this.pY+30, 20);
+        rect(this.pX+20, this.pY+40, 10, 15);
+      }
+      if (character === "Hornet") {//fix rect hitbox :,) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        circle(this.pX+25, this.pY+35, 20);
+        //rect(this.pX+30, this.pY+30, 15, 15);
+      }
     }
-    if (character === "Hornet") {//fix rect hitbox :,) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      circle(this.pX+25, this.pY+35, 20);
-      //rect(this.pX+30, this.pY+30, 15, 15);
+
+    if (keyIsDown(70) === true) {
+      if (character === "LilGuy") {
+        if (direction === "left") {
+          circle(this.pX+25, this.pY+30, 20);
+          rect(this.pX+20, this.pY+40, 10, 15);
+          triangle(this.pX+15, this.pY+30, this.pX+15, this.pY+50, this.pX-15, this.pY+40);
+        }
+        if (direction === "right") {
+          circle(this.pX+25, this.pY+30, 20);
+          rect(this.pX+20, this.pY+40, 10, 15);
+          triangle(this.pX+35, this.pY+30, this.pX+35, this.pY+50, this.pX+65, this.pY+40);
+        }
+    }
+
+      if (character === "Hornet") {
+        if (direction === "left") {
+          circle(this.pX+25, this.pY+35, 20);
+          triangle(this.pX+15, this.pY+30, this.pX+15, this.pY+50, this.pX-20, this.pY+40);
+        }
+        if (direction === "right") {
+          circle(this.pX+25, this.pY+35, 20);
+          triangle(this.pX+35, this.pY+30, this.pX+35, this.pY+50, this.pX+75, this.pY+40);
+        }
+      }
     }
   }
 
@@ -120,6 +163,7 @@ class Player {
           }
         }
       }
+
       if (character === "Hornet") {
         if (keyIsDown(68)) {//pressed d
           this.pX += this.playerSpeed;
@@ -207,10 +251,15 @@ class Enemy {
       circle(this.eX+20, this.eY+25, 35);
     }
     if (opponent === "jumper") {
-      circle(this.eX, this.eY, 25);
+      circle(this.eX+20, this.eY+20, 20);
+      circle(this.eX+20, this.eY+40, 25);
     }
   }
 
+  enemyUpdate() {
+    this.enemyMove();
+    this.enemyHitBoxes();
+  }
 }
 
 let LilGuy;
@@ -241,8 +290,7 @@ function draw() {
   if (state === "play") {
     if (character === "LilGuy") {
       background(220);
-      Charger.enemyMove();
-      Charger.enemyHitBoxes();
+      Jumper.enemyUpdate();
       LilGuy.update();
     }
     if (character === "Hornet") {
