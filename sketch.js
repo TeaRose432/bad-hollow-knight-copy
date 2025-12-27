@@ -4,7 +4,7 @@
 //
 //I used ps.j5 refernece website to learn parameters and what functions need/do.
 //I also used to to help decide what to use between choices like mousePressed or mouseClicked.
-//used for functions such as but not limited to incase i forgot to add them:
+//used for functions such as:
 //triangle, keyIsDown, mousePressed, keyPressed, image
 
 let cords = {
@@ -32,6 +32,16 @@ let enemyCRight;
 let enemyBGRight;
 let hornetImg;
 let lilGuyImg;
+
+let startingRoomBG;
+let statueRoomBG;
+let greeneryRoomBG;
+let gloomyRoomBG;
+let eggRoomBG;
+let graveYardRoomBG;
+let theBackGrounds = [];
+let currentBG = 1;
+
 
 let lgStand;//setting up character movement and idle animations
 let lgStandRight;
@@ -69,6 +79,12 @@ function preload() {//loading images and animations
   enemyBGRight = loadImage("theImageFolder/big-guy-walk-right.gif");
   enemyJRight = loadImage("theImageFolder/jumper-walk-right.gif");
   enemyCRight = loadImage("theImageFolder/charger-walk-right.gif");
+  eggRoomBG = loadImage("theImageFolder/egg-room-background.png");
+  startingRoomBG = loadImage("theImageFolder/starting-background.jpg");
+  greeneryRoomBG = loadImage("theImageFolder/greenery-room-background.png");
+  statueRoomBG = loadImage("theImageFolder/statue-room-background.jpg");
+  gloomyRoomBG = loadImage("theImageFolder/gloomy-room-background.png");
+  graveYardRoomBG = loadImage("theImageFolder/graveyard-room-background.jpg");
 }
 
 class Player {
@@ -78,6 +94,71 @@ class Player {
     this.playerDamage = damage;
     this.playerSpeed = speed;
     this.playerHP = 100;
+  }
+
+  backGroundChange() {
+  console.log(currentBG);
+  //console.log(this.pX);
+  image(theBackGrounds[currentBG], 1, 1);
+
+  if (currentBG === 0) {
+    if (this.pX < 5) {
+      currentBG = 3;
+      this.pX = 840;
+    }
+    if (this.pX > 855) {
+      currentBG = 1;
+      this.pX = 15;
+    }
+  }
+  if (currentBG === 1) {
+    if (this.pX < 5) {
+      currentBG = 0;
+      this.pX = 840;
+    }
+    if (this.pX > 855) {
+      currentBG = 2;
+      this.pX = 15;
+    }
+  }
+  if (currentBG === 2) {
+    if (this.pX < 5) {
+      currentBG = 1;
+      this.pX = 840;
+    }
+    if (this.pX > 855) {
+      currentBG = 5;
+      this.pX = 15;
+    }
+  }
+  if (currentBG === 3) {
+    // if (this.pX < 5) {
+    //   currentBG = ;
+    // }
+    if (this.pX > 855) {
+      currentBG = 4;
+      this.pX = 15;
+    }
+  }
+  if (currentBG === 4) {
+    if (this.pX < 5) {
+      currentBG = 3;
+      this.pX = 840;
+    }
+    if (this.pX > 855) {
+      currentBG = 5;
+      this.pX = 15;
+    }
+  }
+  if (currentBG === 5) {
+    if (this.pX < 5) {
+      currentBG = 4;
+      this.pX = 840;
+    }
+    // if (this.pX > 855) {
+    //   currentBG = ;
+    // }
+  }
   }
 
   playerAttack() {
@@ -270,7 +351,10 @@ let BigGuy;
 
 
 function setup() {
-  createCanvas(900, 900);
+  createCanvas(800, 800);
+  theBackGrounds = [eggRoomBG , startingRoomBG, greeneryRoomBG,
+                    statueRoomBG, gloomyRoomBG, graveYardRoomBG];
+
   Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
   Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
   BigGuy = new Enemy(cords.enemyX, cords.enemyY, 3, 15);
@@ -289,12 +373,11 @@ function draw() {
 
   if (state === "play") {
     if (character === "LilGuy") {
-      background(220);
-      Jumper.enemyUpdate();
+      LilGuy.backGroundChange();
       LilGuy.update();
     }
     if (character === "Hornet") {
-      background(220);
+      Hornet.backGroundChange();
       Hornet.update();
     }
   }
@@ -333,11 +416,4 @@ function mousePressed() {
       state = "play";
     }
   }
-}
-
-function hitBoxes() {
-  if (character === "LilGuy") {
-    circle(this.pX, this.pY-4, 7);
-  }
-
 }
