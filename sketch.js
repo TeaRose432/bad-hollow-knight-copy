@@ -13,13 +13,15 @@ let cords = {
   hX: 650,
   hY: 200,
   enemyX: 700,
-  enemyY: 300,
-  rectX: 350,
-  rectY: 350,
+  enemyY: 200,
+  rectX: 300,
+  rectY: 150,
   w: 200,
   h: 100,
 };
 
+const CANVASWIDTH = 800;
+const CANVASHEIGHT = 450;
 let state = "startScreen";
 let character = "";
 let enemyDirection = "left";
@@ -97,11 +99,13 @@ class Player {
   }
 
   backGroundChange() {
-  console.log(currentBG);
-  //console.log(this.pX);
   image(theBackGrounds[currentBG], 1, 1);
 
   if (currentBG === 0) {
+    Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
+    opponent = "jumper";
+    Jumper.enemyUpdate();
+
     if (this.pX < 5) {
       currentBG = 3;
       this.pX = 840;
@@ -132,9 +136,6 @@ class Player {
     }
   }
   if (currentBG === 3) {
-    // if (this.pX < 5) {
-    //   currentBG = ;
-    // }
     if (this.pX > 855) {
       currentBG = 4;
       this.pX = 15;
@@ -151,13 +152,14 @@ class Player {
     }
   }
   if (currentBG === 5) {
+    Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
+    Charger.enemyUpdate();
+    opponent = "charger";
+    
     if (this.pX < 5) {
       currentBG = 4;
       this.pX = 840;
     }
-    // if (this.pX > 855) {
-    //   currentBG = ;
-    // }
   }
   }
 
@@ -271,7 +273,7 @@ class Player {
     }
   }
 
-  update() {
+  playerUpdate() {
     this.playerMove();
     this.playerAttack();
     this.playerHitBoxes();
@@ -291,9 +293,10 @@ class Enemy {
     if (this.eX <= 5) {
       enemyDirection = "right";
     }
-    if (this.eX >= 830) {
+    if (this.eX >= 795) {
       enemyDirection = "left";
     }
+
     if (enemyDirection === "left") {
       if (opponent === "big guy") {
         this.eX -= this.enemySpeed;
@@ -351,14 +354,14 @@ let BigGuy;
 
 
 function setup() {
-  createCanvas(800, 800);
+  createCanvas(CANVASWIDTH, CANVASHEIGHT);
   theBackGrounds = [eggRoomBG , startingRoomBG, greeneryRoomBG,
                     statueRoomBG, gloomyRoomBG, graveYardRoomBG];
 
-  Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
-  Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
-  BigGuy = new Enemy(cords.enemyX, cords.enemyY, 3, 15);
-  opponent = "jumper";
+  // Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
+  // Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
+  // BigGuy = new Enemy(cords.enemyX, cords.enemyY, 3, 15);
+  // opponent = "jumper";
 }
 
 function draw() {
@@ -374,11 +377,11 @@ function draw() {
   if (state === "play") {
     if (character === "LilGuy") {
       LilGuy.backGroundChange();
-      LilGuy.update();
+      LilGuy.playerUpdate();
     }
     if (character === "Hornet") {
       Hornet.backGroundChange();
-      Hornet.update();
+      Hornet.playerUpdate();
     }
   }
 }
