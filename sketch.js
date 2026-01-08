@@ -25,6 +25,7 @@ const CANVASHEIGHT = 450;
 let state = "startScreen";
 let character = "";
 let enemyDirection = "left";
+let hasEnemy = "false";
 let opponent = "";
 let enemyJ;
 let enemyC;
@@ -99,68 +100,72 @@ class Player {
   }
 
   backGroundChange() {
-  image(theBackGrounds[currentBG], 1, 1);
+    image(theBackGrounds[currentBG], 1, 1);
 
-  if (currentBG === 0) {
-    Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
-    opponent = "jumper";
-    Jumper.enemyUpdate();
+    if (currentBG === 0) {
+      Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
+      hasEnemy = "true";
+      opponent = "jumper";
+      Jumper.enemyUpdate();
 
-    if (this.pX < 5) {
-      currentBG = 3;
-      this.pX = 840;
+      if (this.pX < 5) {
+        currentBG = 3;
+        this.pX = 840;
+      }
+      if (this.pX > 855) {
+        currentBG = 1;
+        this.pX = 15;
+      }
     }
-    if (this.pX > 855) {
-      currentBG = 1;
-      this.pX = 15;
+    if (currentBG === 1) {
+
+      hasEnemy = "false";
+      if (this.pX < 5) {
+        currentBG = 0;
+        this.pX = 840;
+      }
+      if (this.pX > 855) {
+        currentBG = 2;
+        this.pX = 15;
+      }
     }
-  }
-  if (currentBG === 1) {
-    if (this.pX < 5) {
-      currentBG = 0;
-      this.pX = 840;
+    if (currentBG === 2) {
+      if (this.pX < 5) {
+        currentBG = 1;
+        this.pX = 840;
+      }
+      if (this.pX > 855) {
+        currentBG = 5;
+        this.pX = 15;
+      }
     }
-    if (this.pX > 855) {
-      currentBG = 2;
-      this.pX = 15;
+    if (currentBG === 3) {
+      if (this.pX > 855) {
+        currentBG = 4;
+        this.pX = 15;
+      }
     }
-  }
-  if (currentBG === 2) {
-    if (this.pX < 5) {
-      currentBG = 1;
-      this.pX = 840;
+    if (currentBG === 4) {
+      if (this.pX < 5) {
+        currentBG = 3;
+        this.pX = 840;
+      }
+      if (this.pX > 855) {
+        currentBG = 5;
+        this.pX = 15;
+      }
     }
-    if (this.pX > 855) {
-      currentBG = 5;
-      this.pX = 15;
-    }
-  }
-  if (currentBG === 3) {
-    if (this.pX > 855) {
-      currentBG = 4;
-      this.pX = 15;
-    }
-  }
-  if (currentBG === 4) {
-    if (this.pX < 5) {
-      currentBG = 3;
-      this.pX = 840;
-    }
-    if (this.pX > 855) {
-      currentBG = 5;
-      this.pX = 15;
-    }
-  }
-  if (currentBG === 5) {
-    Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
-    Charger.enemyUpdate();
-    opponent = "charger";
+    if (currentBG === 5) {
+      Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
+      hasEnemy = "true";
+      Charger.enemyUpdate();
+      opponent = "charger";
     
-    if (this.pX < 5) {
-      currentBG = 4;
-      this.pX = 840;
+      if (this.pX < 5) {
+        currentBG = 4;
+        this.pX = 840;
+      }
     }
-  }
   }
 
   playerAttack() {
@@ -209,7 +214,7 @@ class Player {
           rect(this.pX+20, this.pY+40, 10, 15);
           triangle(this.pX+35, this.pY+30, this.pX+35, this.pY+50, this.pX+65, this.pY+40);
         }
-    }
+      }
 
       if (character === "Hornet") {
         if (direction === "left") {
@@ -297,34 +302,36 @@ class Enemy {
       enemyDirection = "left";
     }
 
-    if (enemyDirection === "left") {
-      if (opponent === "big guy") {
-        this.eX -= this.enemySpeed;
-        image(enemyBG, this.eX, this.eY, enemyBG.width*0.35, enemyBG.height*0.35);
+    //if (hasEnemy === "true") {
+      if (enemyDirection === "left") {
+        if (opponent === "big guy") {
+          this.eX -= this.enemySpeed;
+          image(enemyBG, this.eX, this.eY, enemyBG.width*0.35, enemyBG.height*0.35);
+        }
+        if (opponent === "charger") {
+          this.eX -= this.enemySpeed;
+          image(enemyC, this.eX, this.eY, enemyC.width*0.35, enemyC.height*0.35);
+        }
+        if (opponent === "jumper") {
+          this.eX -= this.enemySpeed;
+          image(enemyJ, this.eX, this.eY, enemyJ.width*0.35, enemyJ.height*0.35);
+        }
       }
-      if (opponent === "charger") {
-        this.eX -= this.enemySpeed;
-        image(enemyC, this.eX, this.eY, enemyC.width*0.35, enemyC.height*0.35);
+      if (enemyDirection === "right") {
+        if (opponent === "big guy") {
+          this.eX += this.enemySpeed;
+          image(enemyBGRight, this.eX, this.eY, enemyBGRight.width*0.35, enemyBGRight.height*0.35);
+        }
+        if (opponent === "charger") {
+          this.eX += this.enemySpeed;
+          image(enemyCRight, this.eX+10, this.eY, enemyCRight.width*0.35, enemyCRight.height*0.35);
+        }
+        if (opponent === "jumper") {
+          this.eX += this.enemySpeed;
+          image(enemyJRight, this.eX, this.eY, enemyJRight.width*0.35, enemyJRight.height*0.35);
+        }
       }
-      if (opponent === "jumper") {
-        this.eX -= this.enemySpeed;
-        image(enemyJ, this.eX, this.eY, enemyJ.width*0.35, enemyJ.height*0.35);
-      }
-    }
-    if (enemyDirection === "right") {
-      if (opponent === "big guy") {
-        this.eX += this.enemySpeed;
-        image(enemyBGRight, this.eX, this.eY, enemyBGRight.width*0.35, enemyBGRight.height*0.35);
-      }
-      if (opponent === "charger") {
-        this.eX += this.enemySpeed;
-        image(enemyCRight, this.eX+10, this.eY, enemyCRight.width*0.35, enemyCRight.height*0.35);
-      }
-      if (opponent === "jumper") {
-        this.eX += this.enemySpeed;
-        image(enemyJRight, this.eX, this.eY, enemyJRight.width*0.35, enemyJRight.height*0.35);
-      }
-    }
+    //}
   }
 
   enemyHitBoxes() {
@@ -341,8 +348,11 @@ class Enemy {
   }
 
   enemyUpdate() {
-    this.enemyMove();
-    this.enemyHitBoxes();
+    if (hasEnemy === "true") {
+      this.enemyMove();
+      this.enemyHitBoxes();
+
+    }
   }
 }
 
