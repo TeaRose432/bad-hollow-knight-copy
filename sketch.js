@@ -6,6 +6,7 @@
 //I also used to to help decide what to use between choices like mousePressed or mouseClicked.
 //used for functions such as:
 //triangle, keyIsDown, mousePressed, keyPressed, image
+//https://github.com/bmoren/p5.collide2D --- I used this to figure out how to use p5.collide properly
 
 let cords = {
   lgX: 100,
@@ -25,7 +26,7 @@ const CANVASHEIGHT = 450;
 let state = "startScreen";
 let character = "";
 let enemyDirection = "left";
-let hasEnemy = "false";
+let hasEnemy = false;
 let opponent = "";
 let enemyJ;
 let enemyC;
@@ -35,6 +36,11 @@ let enemyCRight;
 let enemyBGRight;
 let hornetImg;
 let lilGuyImg;
+let LilGuy;
+let Hornet;
+let Charger;
+let Jumper;
+let BigGuy;
 
 let startingRoomBG;
 let statueRoomBG;
@@ -59,6 +65,7 @@ let hornetAttack;
 let hornetAttackRight;
 let lgAttack;
 let lgAttackRight;
+let isPlayerHit = false;
 let direction = "right";//is used to know which way character should face when movement stops
 
 function preload() {//loading images and animations
@@ -103,10 +110,15 @@ class Player {
     image(theBackGrounds[currentBG], 1, 1);
 
     if (currentBG === 0) {
-      Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
-      hasEnemy = "true";
-      opponent = "jumper";
-      Jumper.enemyUpdate();
+      if (hasEnemy === false) {
+        hasEnemy = true;
+        Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
+      }
+      else if (hasEnemy === true) {
+        opponent = "jumper";
+        Jumper.enemyUpdate();
+        isPlayerHit = collideCircleCircle(Jumper.enemyX, Jumper.enemyY, );
+      }
 
       if (this.pX < 5) {
         currentBG = 3;
@@ -119,7 +131,7 @@ class Player {
     }
     if (currentBG === 1) {
 
-      hasEnemy = "false";
+      hasEnemy = false;
       if (this.pX < 5) {
         currentBG = 0;
         this.pX = 840;
@@ -156,10 +168,14 @@ class Player {
       }
     }
     if (currentBG === 5) {
-      Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
-      hasEnemy = "true";
-      Charger.enemyUpdate();
-      opponent = "charger";
+      if (hasEnemy === false) {
+        Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
+        hasEnemy = true;
+      }
+      else if (hasEnemy === true) {
+        Charger.enemyUpdate();
+        opponent = "charger";
+      }
     
       if (this.pX < 5) {
         currentBG = 4;
@@ -196,9 +212,9 @@ class Player {
         circle(this.pX+25, this.pY+30, 20);
         rect(this.pX+20, this.pY+40, 10, 15);
       }
-      if (character === "Hornet") {//fix rect hitbox :,) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      if (character === "Hornet") {
         circle(this.pX+25, this.pY+35, 20);
-        //rect(this.pX+30, this.pY+30, 15, 15);
+
       }
     }
 
@@ -207,12 +223,12 @@ class Player {
         if (direction === "left") {
           circle(this.pX+25, this.pY+30, 20);
           rect(this.pX+20, this.pY+40, 10, 15);
-          triangle(this.pX+15, this.pY+30, this.pX+15, this.pY+50, this.pX-15, this.pY+40);
+          triangle(this.pX+15, this.pY+30, this.pX+15, this.pY+50, this.pX-25, this.pY+40);
         }
         if (direction === "right") {
           circle(this.pX+25, this.pY+30, 20);
           rect(this.pX+20, this.pY+40, 10, 15);
-          triangle(this.pX+35, this.pY+30, this.pX+35, this.pY+50, this.pX+65, this.pY+40);
+          triangle(this.pX+35, this.pY+30, this.pX+35, this.pY+50, this.pX+75, this.pY+40);
         }
       }
 
@@ -301,37 +317,37 @@ class Enemy {
     if (this.eX >= 795) {
       enemyDirection = "left";
     }
+    
+    if (enemyDirection === "left") {
+      if (opponent === "big guy") {
+        this.eX -= this.enemySpeed;
+        image(enemyBG, this.eX, this.eY, enemyBG.width*0.35, enemyBG.height*0.35);
+      }
+      if (opponent === "charger") {
+        this.eX -= this.enemySpeed;
+        image(enemyC, this.eX, this.eY, enemyC.width*0.35, enemyC.height*0.35);
+      }
+      if (opponent === "jumper") {
+        this.eX -= this.enemySpeed;
+        image(enemyJ, this.eX, this.eY, enemyJ.width*0.35, enemyJ.height*0.35);
+      }
+    }
+    if (enemyDirection === "right") {
+      if (opponent === "big guy") {
+        this.eX += this.enemySpeed;
+        image(enemyBGRight, this.eX, this.eY, enemyBGRight.width*0.35, enemyBGRight.height*0.35);
+      }
+      if (opponent === "charger") {
+        this.eX += this.enemySpeed;
+        image(enemyCRight, this.eX+10, this.eY, enemyCRight.width*0.35, enemyCRight.height*0.35);
+      }
+      if (opponent === "jumper") {
+        this.eX += this.enemySpeed;
+        image(enemyJRight, this.eX, this.eY, enemyJRight.width*0.35, enemyJRight.height*0.35);
+      }
+    }
+    
 
-    //if (hasEnemy === "true") {
-      if (enemyDirection === "left") {
-        if (opponent === "big guy") {
-          this.eX -= this.enemySpeed;
-          image(enemyBG, this.eX, this.eY, enemyBG.width*0.35, enemyBG.height*0.35);
-        }
-        if (opponent === "charger") {
-          this.eX -= this.enemySpeed;
-          image(enemyC, this.eX, this.eY, enemyC.width*0.35, enemyC.height*0.35);
-        }
-        if (opponent === "jumper") {
-          this.eX -= this.enemySpeed;
-          image(enemyJ, this.eX, this.eY, enemyJ.width*0.35, enemyJ.height*0.35);
-        }
-      }
-      if (enemyDirection === "right") {
-        if (opponent === "big guy") {
-          this.eX += this.enemySpeed;
-          image(enemyBGRight, this.eX, this.eY, enemyBGRight.width*0.35, enemyBGRight.height*0.35);
-        }
-        if (opponent === "charger") {
-          this.eX += this.enemySpeed;
-          image(enemyCRight, this.eX+10, this.eY, enemyCRight.width*0.35, enemyCRight.height*0.35);
-        }
-        if (opponent === "jumper") {
-          this.eX += this.enemySpeed;
-          image(enemyJRight, this.eX, this.eY, enemyJRight.width*0.35, enemyJRight.height*0.35);
-        }
-      }
-    //}
   }
 
   enemyHitBoxes() {
@@ -348,20 +364,12 @@ class Enemy {
   }
 
   enemyUpdate() {
-    if (hasEnemy === "true") {
-      this.enemyMove();
-      this.enemyHitBoxes();
+    this.enemyMove();
+    this.enemyHitBoxes();
 
-    }
+
   }
 }
-
-let LilGuy;
-let Hornet;
-let Charger;
-let Jumper;
-let BigGuy;
-
 
 function setup() {
   createCanvas(CANVASWIDTH, CANVASHEIGHT);
@@ -419,13 +427,11 @@ function mousePressed() {
     if (mouseX >= cords.lgX && mouseX <= cords.lgX + lilGuyImg.width*0.2 && mouseY >= cords.lgY && mouseY <= cords.lgY + lilGuyImg.height*0.2) {
       LilGuy = new Player(cords.lgX, cords.lgY, 5, 25);
       character = "LilGuy";
-      currentGif = "lilGuyIdleRight";
       state = "play";
     }
     if (mouseX >= cords.hX && mouseX <= cords.hX + hornetImg.width*0.2 && mouseY >= cords.hY && mouseY <= cords.hY + hornetImg.height*0.23) {
       Hornet = new Player(cords.hX, cords.hY, 9, 15);
       character = "Hornet";
-      currentGif = "hornetIdleRight";
       state = "play";
     }
   }
