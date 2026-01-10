@@ -23,10 +23,12 @@ let cords = {
 
 const CANVASWIDTH = 800;
 const CANVASHEIGHT = 450;
+const INVULNERABILITY = 10;
 let state = "startScreen";
 let character = "";
 let enemyDirection = "left";
 let hasEnemy = false;
+let enemyKilled = false;
 let opponent = "";
 let enemyJ;
 let enemyC;
@@ -65,7 +67,10 @@ let hornetAttack;
 let hornetAttackRight;
 let lgAttack;
 let lgAttackRight;
+let dmgCooldownCounter = 0;
 let isPlayerHit = false;
+let isEnemyHit = false;
+let gotHit = false;
 let direction = "right";//is used to know which way character should face when movement stops
 
 function preload() {//loading images and animations
@@ -103,23 +108,22 @@ class Player {
     this.pY = y;
     this.playerDamage = damage;
     this.playerSpeed = speed;
-    this.playerHP = 100;
+    this.playerHP = 3;
   }
 
   backGroundChange() {
     image(theBackGrounds[currentBG], 1, 1);
 
     if (currentBG === 0) {
-      if (hasEnemy === false) {
+      this.pY = 305;
+      if (hasEnemy === false && enemyKilled === false) {
         hasEnemy = true;
-        Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
+        Jumper = new Enemy(cords.enemyX, cords.enemyY+90, 0, 20);
       }
       else if (hasEnemy === true) {
         opponent = "jumper";
         Jumper.enemyUpdate();
-        isPlayerHit = collideCircleCircle(Jumper.enemyX, Jumper.enemyY, );
       }
-
       if (this.pX < 5) {
         currentBG = 3;
         this.pX = 840;
@@ -129,9 +133,11 @@ class Player {
         this.pX = 15;
       }
     }
-    if (currentBG === 1) {
 
+    if (currentBG === 1) {
+      this.pY = 375;
       hasEnemy = false;
+
       if (this.pX < 5) {
         currentBG = 0;
         this.pX = 840;
@@ -141,7 +147,11 @@ class Player {
         this.pX = 15;
       }
     }
+
     if (currentBG === 2) {
+      this.pY = 355;
+      hasEnemy = false;
+
       if (this.pX < 5) {
         currentBG = 1;
         this.pX = 840;
@@ -151,13 +161,26 @@ class Player {
         this.pX = 15;
       }
     }
+
     if (currentBG === 3) {
+      this.pY = 355;
+      // if (hasEnemy === false) {
+      //   BigGuy = new Enemy(cords.enemyX, cords.enemyY, 0, 20);
+      //   hasEnemy = true;
+      // }
+      // else if (hasEnemy === true) {
+      //   opponent = "big guy";
+      //   BigGuy.enemyUpdate();
+      // }
+
       if (this.pX > 855) {
         currentBG = 4;
         this.pX = 15;
       }
     }
+
     if (currentBG === 4) {
+      this.pY = 355;
       if (this.pX < 5) {
         currentBG = 3;
         this.pX = 840;
@@ -167,9 +190,11 @@ class Player {
         this.pX = 15;
       }
     }
+
     if (currentBG === 5) {
-      if (hasEnemy === false) {
-        Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
+      this.pY = 325;
+      if (hasEnemy === false && enemyKilled === false) {
+        Charger = new Enemy(cords.enemyX, cords.enemyY+120, 0, 25);
         hasEnemy = true;
       }
       else if (hasEnemy === true) {
@@ -214,7 +239,6 @@ class Player {
       }
       if (character === "Hornet") {
         circle(this.pX+25, this.pY+35, 20);
-
       }
     }
 
@@ -223,23 +247,22 @@ class Player {
         if (direction === "left") {
           circle(this.pX+25, this.pY+30, 20);
           rect(this.pX+20, this.pY+40, 10, 15);
-          triangle(this.pX+15, this.pY+30, this.pX+15, this.pY+50, this.pX-25, this.pY+40);
+          line(this.pX+10, this.pY+30, this.pX-40, this.pY+30);
         }
         if (direction === "right") {
           circle(this.pX+25, this.pY+30, 20);
           rect(this.pX+20, this.pY+40, 10, 15);
-          triangle(this.pX+35, this.pY+30, this.pX+35, this.pY+50, this.pX+75, this.pY+40);
+          line(this.pX+35, this.pY+30, this.pX+80, this.pY+30);
         }
       }
-
       if (character === "Hornet") {
         if (direction === "left") {
           circle(this.pX+25, this.pY+35, 20);
-          triangle(this.pX+15, this.pY+30, this.pX+15, this.pY+50, this.pX-20, this.pY+40);
+          line(this.pX+15, this.pY+30, this.pX-25, this.pY+30);
         }
         if (direction === "right") {
           circle(this.pX+25, this.pY+35, 20);
-          triangle(this.pX+35, this.pY+30, this.pX+35, this.pY+50, this.pX+75, this.pY+40);
+          line(this.pX+35, this.pY+30, this.pX+85, this.pY+30);
         }
       }
     }
@@ -277,24 +300,40 @@ class Player {
         else if (keyIsDown(65)) {//pressed a
           this.pX -= this.playerSpeed;
           image(hornetRun, this.pX-30, this.pY);
-          currentGif = "hornetRunLeft";
           direction = "left";
         }
         else {
           if (direction === "left") {
             image(hornetIdle, this.pX-20, this.pY, hornetIdle.width*0.4, hornetIdle.height*0.4);
-            currentGif = "hornetIdleLeft";
           }
           if (direction === "right") {
             image(horentIdleRight, this.pX-10, this.pY, horentIdleRight.width*0.4, horentIdleRight.height*0.4);
-            currentGif = "hornetIdleRight";
           }
         }
       }
     }
   }
 
+  playerDamageTaken() {
+    if (isPlayerHit === true) {
+      this.playerHP -= 1;
+      gotHit = true;
+      isPlayerHit = false;
+    }
+    if (this.playerHP < 1) {
+      state = "startScreen";
+    }
+    if (gotHit === true) {
+      dmgCooldownCounter += 0.5;
+    }
+    if (dmgCooldownCounter >= INVULNERABILITY) {
+      dmgCooldownCounter = 0;
+      gotHit = false;
+    }
+  }
+
   playerUpdate() {
+    this.playerDamageTaken();
     this.playerMove();
     this.playerAttack();
     this.playerHitBoxes();
@@ -307,7 +346,7 @@ class Enemy {
     this.eY = y;
     this.enemySpeed = speed;
     this.enemyDamage = damage;
-    this.enemyHP = 100;
+    this.enemyHP = 3;
   }
 
   enemyMove() {
@@ -346,8 +385,6 @@ class Enemy {
         image(enemyJRight, this.eX, this.eY, enemyJRight.width*0.35, enemyJRight.height*0.35);
       }
     }
-    
-
   }
 
   enemyHitBoxes() {
@@ -363,11 +400,29 @@ class Enemy {
     }
   }
 
+  enemyDamageTaken() {
+    if (isEnemyHit === true) {
+      this.enemyHP -= 1;
+      gotHit = true;
+      isEnemyHit = false;
+    }
+    if (this.enemyHP < 1) {
+      hasEnemy = false;
+      enemyKilled = true;
+    }
+    if (gotHit === true) {
+      dmgCooldownCounter + 0.5;
+    }
+    if (dmgCooldownCounter >= INVULNERABILITY) {
+      dmgCooldownCounter = 0;
+      gotHit = false;
+    }
+  }
+
   enemyUpdate() {
+    this.enemyDamageTaken();
     this.enemyMove();
     this.enemyHitBoxes();
-
-
   }
 }
 
@@ -375,11 +430,6 @@ function setup() {
   createCanvas(CANVASWIDTH, CANVASHEIGHT);
   theBackGrounds = [eggRoomBG , startingRoomBG, greeneryRoomBG,
                     statueRoomBG, gloomyRoomBG, graveYardRoomBG];
-
-  // Charger = new Enemy(cords.enemyX, cords.enemyY, 3, 25);
-  // Jumper = new Enemy(cords.enemyX, cords.enemyY, 4, 20);
-  // BigGuy = new Enemy(cords.enemyX, cords.enemyY, 3, 15);
-  // opponent = "jumper";
 }
 
 function draw() {
@@ -393,11 +443,15 @@ function draw() {
   }
 
   if (state === "play") {
+    //console.log(this.enemyHP);
+    console.log(dmgCooldownCounter);
     if (character === "LilGuy") {
+      hitBoxCheck();
       LilGuy.backGroundChange();
       LilGuy.playerUpdate();
     }
     if (character === "Hornet") {
+      hitBoxCheck();
       Hornet.backGroundChange();
       Hornet.playerUpdate();
     }
@@ -436,3 +490,86 @@ function mousePressed() {
     }
   }
 }
+
+function hitBoxCheck() {
+  if (dmgCooldownCounter === 0) {
+    if (keyIsDown(70) === false) {
+      if (character === "LilGuy") {
+        if (opponent === "jumper") {
+          isPlayerHit = collideCircleCircle(Jumper.eX+20, Jumper.eY+40, 25, LilGuy.pX+20, LilGuy.pY+30, 20);
+        }
+        if (opponent === "charger") {
+          isPlayerHit = collideCircleCircle(Charger.eX+30, Charger.eY+40, 35, LilGuy.pX+20, LilGuy.pY+30, 20);
+        }
+        if (opponent === "big guy") {
+          isPlayerHit = collideCircleCircle(BigGuy.eX, BigGuy.eY, 35, LilGuy.pX+20, LilGuy.pY+30, 20);
+        }
+      }
+      if (character === "Hornet") {
+        if (opponent === "jumper") {
+          isPlayerHit = collideCircleCircle(Jumper.eX+20, Jumper.eY+40, 25, Hornet.pX+25, Hornet.pY+35, 20);
+        }
+        if (opponent === "charger") {
+          isPlayerHit = collideCircleCircle(Charger.eX+30, Charger.eY+40, 35, Hornet.pX+25, Hornet.pY+35, 20);
+        }
+        if (opponent === "big guy") {
+          isPlayerHit = collideCircleCircle(BigGuy.eX+20, BigGuy.eY+25, 35, Hornet.pX+25, Hornet.pY+35, 20);
+        }
+      }
+    }
+  
+    if (keyIsDown(70) === true) {
+      if (character === "LilGuy") {
+        if (direction === "left") {
+          if (opponent === "jumper") {
+            //isEnemyHit = collideLineCircle(LilGuy.pX+10, LilGuy.pY+30, LilGuy.pX-40, LilGuy.pY+30, Jumper.eX+20, Jumper.eY+20, 20);
+            isEnemyHit = collideLineCircle(LilGuy.pX+10, LilGuy.pY+30, LilGuy.pX-40, LilGuy.pY+30, Jumper.eX+20, Jumper.eY+40, 25);
+          }
+          if (opponent === "charger") {
+            isEnemyHit = collideLineCircle(LilGuy.pX+10, LilGuy.pY+30, LilGuy.pX-40, LilGuy.pY+30, Charger.eX+30, Charger.eY+40, 35);
+          }
+          if (opponent === "big guy") {
+            isEnemyHit = collideLineCircle(LilGuy.pX+10, LilGuy.pY+30, LilGuy.pX-40, LilGuy.pY+30, BigGuy.eX+20, BigGuy.eY+25, 35);
+          }
+        }
+        if (direction === "right") {
+          if (opponent === "jumper") {
+            isEnemyHit = collideLineCircle(LilGuy.pX+30, LilGuy.pY+35, LilGuy.pX+80, LilGuy.pY+30, Jumper.eX+20, Jumper.eY+40, 25);
+          }
+          if (opponent === "charger") {
+            isEnemyHit = collideLineCircle(LilGuy.pX+30, LilGuy.pY+35, LilGuy.pX+80, LilGuy.pY+30, Charger.eX+30, Charger.eY+40, 35);
+          }
+          if (opponent === "big guy") {
+            isEnemyHit = collideLineCircle(LilGuy.pX+30, LilGuy.pY+35, LilGuy.pX+80, LilGuy.pY+30, BigGuy.eX+20, BigGuy.eY+25, 35);
+          }
+        }
+      }
+      if (character === "Hornet") {
+        if (direction === "left") {
+          if (opponent === "jumper") {
+            //isEnemyHit = collideLineCircle(LilGuy.pX+10, LilGuy.pY+30, LilGuy.pX-40, LilGuy.pY+30, Jumper.eX+20, Jumper.eY+20, 20);
+            isEnemyHit = collideLineCircle(Hornet.pX+15, Hornet.pY+30, Hornet.pX-25, Hornet.pY+30, Jumper.eX+20, Jumper.eY+40, 25);
+          }
+          if (opponent === "charger") {
+            isEnemyHit = collideLineCircle(Hornet.pX+15, Hornet.pY+30, Hornet.pX-25, Hornet.pY+30, Charger.eX+30, Charger.eY+40, 35);
+          }
+          if (opponent === "big guy") {
+            isEnemyHit = collideLineCircle(Hornet.pX+15, Hornet.pY+30, Hornet.pX-25, Hornet.pY+30, BigGuy.eX+20, BigGuy.eY+25, 35);
+          }
+        }
+        if (direction === "right") {
+          if (opponent === "jumper") {
+            isEnemyHit = collideLineCircle(Hornet.pX+35, Hornet.pY+30, Hornet.pX+85, Hornet.pY+30, Jumper.eX+20, Jumper.eY+40, 25);
+          }
+          if (opponent === "charger") {
+            isEnemyHit = collideLineCircle(Hornet.pX+35, Hornet.pY+30, Hornet.pX+85, Hornet.pY+30, Charger.eX+30, Charger.eY+40, 35);
+          }
+          if (opponent === "big guy") {
+            isEnemyHit = collideLineCircle(Hornet.pX+35, Hornet.pY+30, Hornet.pX+85, Hornet.pY+30, BigGuy.eX+20, BigGuy.eY+25, 35);
+          }
+        }
+      }
+    }
+  }
+}
+
