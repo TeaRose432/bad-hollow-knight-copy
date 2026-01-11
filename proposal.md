@@ -7,7 +7,7 @@
 - players
     - a choice between two characters with different strengths
 - enemies
-    - enemies to fight while exploring, like a jumping enemy, a charging one.   - different health and damage depending on the enemy.
+    - enemies to fight while exploring, like a jumping enemy, a charging one.
 - multiple rooms to explore
 - attack animations/ability to kill enemies 
 - 3 lives/hits mechanic

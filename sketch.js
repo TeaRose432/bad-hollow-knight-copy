@@ -103,10 +103,9 @@ function preload() {//loading images and animations
 }
 
 class Player {
-  constructor(x, y, speed, damage) {
+  constructor(x, y, speed) {
     this.pX = x;
     this.pY = y;
-    this.playerDamage = damage;
     this.playerSpeed = speed;
     this.playerHP = 3;
   }
@@ -116,21 +115,35 @@ class Player {
 
     if (currentBG === 0) {
       this.pY = 305;
+
       if (hasEnemy === false && enemyKilled === false) {
         hasEnemy = true;
-        Jumper = new Enemy(cords.enemyX, cords.enemyY+90, 0, 20);
+        Jumper = new Enemy(cords.enemyX, cords.enemyY+90, 0);
       }
       else if (hasEnemy === true) {
         opponent = "jumper";
         Jumper.enemyUpdate();
       }
-      if (this.pX < 5) {
-        currentBG = 3;
-        this.pX = 840;
+
+      if (enemyKilled === true) {
+        if (this.pX < 60) {
+          enemyKilled = false;
+          currentBG = 3;
+          this.pX = 110;
+        }
+        if (this.pX > 795) {
+          enemyKilled = false;
+          currentBG = 1;
+          this.pX = 15;
+        }
       }
-      if (this.pX > 855) {
-        currentBG = 1;
-        this.pX = 15;
+      else {
+        if (this.pX < 85) {
+          this.pX = 90;
+        }
+        if (this.pX > 795) {
+          this.pX = 790;
+        }
       }
     }
 
@@ -139,10 +152,12 @@ class Player {
       hasEnemy = false;
 
       if (this.pX < 5) {
+        enemyKilled = false;
         currentBG = 0;
         this.pX = 840;
       }
       if (this.pX > 855) {
+        enemyKilled = false;
         currentBG = 2;
         this.pX = 15;
       }
@@ -153,58 +168,96 @@ class Player {
       hasEnemy = false;
 
       if (this.pX < 5) {
+        enemyKilled = false;
         currentBG = 1;
         this.pX = 840;
       }
-      if (this.pX > 855) {
+      if (this.pX > 680) {
+        enemyKilled = false;
         currentBG = 5;
-        this.pX = 15;
+        this.pX = 690;
       }
     }
 
     if (currentBG === 3) {
+      showText();
       this.pY = 355;
-      // if (hasEnemy === false) {
-      //   BigGuy = new Enemy(cords.enemyX, cords.enemyY, 0, 20);
-      //   hasEnemy = true;
-      // }
-      // else if (hasEnemy === true) {
-      //   opponent = "big guy";
-      //   BigGuy.enemyUpdate();
-      // }
+      hasEnemy = false;
 
       if (this.pX > 855) {
+        enemyKilled = false;
         currentBG = 4;
         this.pX = 15;
+      }
+      if (this.pX < 100) {
+        this.pX = 105;
       }
     }
 
     if (currentBG === 4) {
       this.pY = 355;
-      if (this.pX < 5) {
-        currentBG = 3;
-        this.pX = 840;
+
+      if (hasEnemy === false && enemyKilled === false) {
+        BigGuy = new Enemy(cords.enemyX-200, cords.enemyY+170, 0);
+        hasEnemy = true;
       }
-      if (this.pX > 855) {
-        currentBG = 5;
-        this.pX = 15;
+      else if (hasEnemy === true) {
+        opponent = "big guy";
+        BigGuy.enemyUpdate();
+      }
+
+      if (enemyKilled === true) {
+        if (this.pX < 5) {
+          enemyKilled = false;
+          currentBG = 3;
+          this.pX = 840;
+        }
+        if (this.pX > 855) {
+          enemyKilled = false;
+          currentBG = 5;
+          this.pX = 15;
+        }
+      }
+      else {
+        if (this.pX < 5) {
+          this.pX = 10;
+        }
+        if (this.pX > 795) {
+          this.pX = 790;
+        }
       }
     }
 
     if (currentBG === 5) {
       this.pY = 325;
+      showText();
+
       if (hasEnemy === false && enemyKilled === false) {
-        Charger = new Enemy(cords.enemyX, cords.enemyY+120, 0, 25);
+        Charger = new Enemy(cords.enemyX-120, cords.enemyY+120, 0);
         hasEnemy = true;
       }
       else if (hasEnemy === true) {
-        Charger.enemyUpdate();
         opponent = "charger";
+        Charger.enemyUpdate();
       }
     
-      if (this.pX < 5) {
-        currentBG = 4;
-        this.pX = 840;
+      if (enemyKilled === true) {
+        if (this.pX < 5) {
+          enemyKilled = false;
+          currentBG = 4;
+          this.pX = 840;
+        }
+        if (this.pX > 785) {
+          this.pX = 780
+        }
+      }
+      else {
+        if (this.pX < 5) {
+          this.pX = 10;
+        }
+        if (this.pX > 785) {
+          this.pX = 780;
+        }
       }
     }
   }
@@ -341,16 +394,15 @@ class Player {
 }
 
 class Enemy {
-  constructor(x, y, speed, damage) {
+  constructor(x, y, speed) {
     this.eX = x;
     this.eY = y;
     this.enemySpeed = speed;
-    this.enemyDamage = damage;
     this.enemyHP = 3;
   }
 
   enemyMove() {
-    if (this.eX <= 5) {
+    if (this.eX <= 70) {
       enemyDirection = "right";
     }
     if (this.eX >= 795) {
@@ -402,12 +454,11 @@ class Enemy {
 
   enemyDamageTaken() {
     if (isEnemyHit === true) {
-      this.enemyHP -= 1;
+      this.enemyHP -= 0.5;
       gotHit = true;
       isEnemyHit = false;
     }
     if (this.enemyHP < 1) {
-      hasEnemy = false;
       enemyKilled = true;
     }
     if (gotHit === true) {
@@ -419,7 +470,20 @@ class Enemy {
     }
   }
 
+  enemyAttack() {
+    
+  }
+
+  isDead() {
+    if (enemyKilled === true) {
+      hasEnemy = false;
+      opponent = " ";
+    }
+  }
+
   enemyUpdate() {
+    this.isDead();
+    this.enemyAttack();
     this.enemyDamageTaken();
     this.enemyMove();
     this.enemyHitBoxes();
@@ -433,18 +497,21 @@ function setup() {
 }
 
 function draw() {
+  console.log(enemyKilled);
+  console.log(opponent);
   if (state === "startScreen") {
     background(220);
+    showText();
     showButton();
   }
+
   if (state === "characterChoice") {
     background(220);
+    showText();
     Choices();
   }
 
   if (state === "play") {
-    //console.log(this.enemyHP);
-    console.log(dmgCooldownCounter);
     if (character === "LilGuy") {
       hitBoxCheck();
       LilGuy.backGroundChange();
@@ -479,12 +546,12 @@ function mousePressed() {
   }
   if (state === "characterChoice") {//checks which character is chosen
     if (mouseX >= cords.lgX && mouseX <= cords.lgX + lilGuyImg.width*0.2 && mouseY >= cords.lgY && mouseY <= cords.lgY + lilGuyImg.height*0.2) {
-      LilGuy = new Player(cords.lgX, cords.lgY, 5, 25);
+      LilGuy = new Player(cords.lgX, cords.lgY, 5);
       character = "LilGuy";
       state = "play";
     }
     if (mouseX >= cords.hX && mouseX <= cords.hX + hornetImg.width*0.2 && mouseY >= cords.hY && mouseY <= cords.hY + hornetImg.height*0.23) {
-      Hornet = new Player(cords.hX, cords.hY, 9, 15);
+      Hornet = new Player(cords.hX, cords.hY, 9);
       character = "Hornet";
       state = "play";
     }
@@ -522,7 +589,6 @@ function hitBoxCheck() {
       if (character === "LilGuy") {
         if (direction === "left") {
           if (opponent === "jumper") {
-            //isEnemyHit = collideLineCircle(LilGuy.pX+10, LilGuy.pY+30, LilGuy.pX-40, LilGuy.pY+30, Jumper.eX+20, Jumper.eY+20, 20);
             isEnemyHit = collideLineCircle(LilGuy.pX+10, LilGuy.pY+30, LilGuy.pX-40, LilGuy.pY+30, Jumper.eX+20, Jumper.eY+40, 25);
           }
           if (opponent === "charger") {
@@ -547,7 +613,6 @@ function hitBoxCheck() {
       if (character === "Hornet") {
         if (direction === "left") {
           if (opponent === "jumper") {
-            //isEnemyHit = collideLineCircle(LilGuy.pX+10, LilGuy.pY+30, LilGuy.pX-40, LilGuy.pY+30, Jumper.eX+20, Jumper.eY+20, 20);
             isEnemyHit = collideLineCircle(Hornet.pX+15, Hornet.pY+30, Hornet.pX-25, Hornet.pY+30, Jumper.eX+20, Jumper.eY+40, 25);
           }
           if (opponent === "charger") {
@@ -573,3 +638,20 @@ function hitBoxCheck() {
   }
 }
 
+function showText() {
+  if (state === "startScreen") {
+    textSize(25);
+    text("Welcome to my horrible copy of the game Hollow Knight", 80, 30);
+    text("Use A and D to move, F to attack.", 200, 80);
+    textSize(18);
+    text("Explore the rooms, be careful of falling, there are no ladders to get back up.", 70, 300);
+    text("Fight off enemies, don't touch them, they bite! You need to defeat your foe before moving on.", 30, 330);
+  }
+  if (state === "play") {
+    if (currentBG === 3 || currentBG === 5) {
+      textSize(24);
+      fill("white");
+      text("oops... looks like you fell.", 30, 50);
+    }
+  }
+}
