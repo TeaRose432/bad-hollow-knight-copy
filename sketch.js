@@ -19,6 +19,10 @@ let cords = {
   rectY: 150,
   w: 200,
   h: 100,
+  rectX2: 700,
+  rectY2: 400,
+  w2: 100,
+  h2: 50,
 };
 
 const CANVASWIDTH = 800;
@@ -52,7 +56,6 @@ let eggRoomBG;
 let graveYardRoomBG;
 let theBackGrounds = [];
 let currentBG = 1;
-
 
 let lgStand;//setting up character movement and idle animations
 let lgStandRight;
@@ -118,7 +121,7 @@ class Player {
 
       if (hasEnemy === false && enemyKilled === false) {
         hasEnemy = true;
-        Jumper = new Enemy(cords.enemyX, cords.enemyY+90, 0);
+        Jumper = new Enemy(cords.enemyX-250, cords.enemyY+90, 2);
       }
       else if (hasEnemy === true) {
         opponent = "jumper";
@@ -248,7 +251,7 @@ class Player {
           this.pX = 840;
         }
         if (this.pX > 785) {
-          this.pX = 780
+          this.pX = 780;
         }
       }
       else {
@@ -471,7 +474,16 @@ class Enemy {
   }
 
   enemyAttack() {
-    
+    if (character === LilGuy) {
+      if (opponent === "jumper") {
+        if (LilGuy.pX < this.eX) {
+          enemyDirection = "left";
+        }
+        if (LilGuy.pX > this.eX) {
+          enemyDirection = "right";
+        }
+      }
+    }
   }
 
   isDead() {
@@ -497,12 +509,15 @@ function setup() {
 }
 
 function draw() {
-  console.log(enemyKilled);
-  console.log(opponent);
   if (state === "startScreen") {
     background(220);
     showText();
     showButton();
+  }
+
+  if (state === "enemyIndex") {
+    background(200);
+    showEnemyIndex();
   }
 
   if (state === "characterChoice") {
@@ -529,6 +544,7 @@ function showButton() { //shows the begin button
   stroke("black");
   fill("gray");
   rect(cords.rectX, cords.rectY, cords.w, cords.h);
+  rect(cords.rectX2, cords.rectY2, cords.w2, cords.h2);
 }
 
 function Choices() {//lets player decide which character to play
@@ -542,6 +558,9 @@ function mousePressed() {
   if (state === "startScreen") {//checks if start button is pressed
     if (mouseX >= cords.rectX && mouseX <= cords.rectX + cords.w && mouseY >= cords.rectY && mouseY <= cords.rectY + cords.h) {
       state = "characterChoice";
+    }
+    if (mouseX >= cords.rectX2 && mouseX <= cords.rectX2 + cords.w2 && mouseY >= cords.rectY2 && mouseY <= cords.rectY2 + cords.h2) {
+      state = "enemyIndex";
     }
   }
   if (state === "characterChoice") {//checks which character is chosen
@@ -647,6 +666,13 @@ function showText() {
     text("Explore the rooms, be careful of falling, there are no ladders to get back up.", 70, 300);
     text("Fight off enemies, don't touch them, they bite! You need to defeat your foe before moving on.", 30, 330);
   }
+
+  if (state === "enemyIndex") {
+    text();
+    text();
+    text();
+  }
+
   if (state === "play") {
     if (currentBG === 3 || currentBG === 5) {
       textSize(24);
@@ -654,4 +680,10 @@ function showText() {
       text("oops... looks like you fell.", 30, 50);
     }
   }
+}
+
+function showEnemyIndex() {
+  image(enemyJ, 50, 50);
+  image(enemyC, 300, 50);
+  image(enemyBG, 600, 50);
 }
