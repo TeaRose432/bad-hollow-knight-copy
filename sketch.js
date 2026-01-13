@@ -28,6 +28,10 @@ let cords = {
 const CANVASWIDTH = 800;
 const CANVASHEIGHT = 450;
 const INVULNERABILITY = 10;
+const R = 0;
+const G = 0;
+const B = 0;
+const ALPHA = 0;
 let state = "startScreen";
 let character = "";
 let enemyDirection = "left";
@@ -201,7 +205,7 @@ class Player {
       this.pY = 355;
 
       if (hasEnemy === false && enemyKilled === false) {
-        BigGuy = new Enemy(cords.enemyX-200, cords.enemyY+170, 0);
+        BigGuy = new Enemy(cords.enemyX-200, cords.enemyY+170, 1);
         hasEnemy = true;
       }
       else if (hasEnemy === true) {
@@ -236,7 +240,7 @@ class Player {
       showText();
 
       if (hasEnemy === false && enemyKilled === false) {
-        Charger = new Enemy(cords.enemyX-120, cords.enemyY+120, 0);
+        Charger = new Enemy(cords.enemyX-120, cords.enemyY+120, 2);
         hasEnemy = true;
       }
       else if (hasEnemy === true) {
@@ -288,6 +292,9 @@ class Player {
   }
 
   playerHitBoxes() {
+    noStroke();
+    fill(R, G, B, ALPHA);
+
     if (keyIsDown(70) === false) {
       if (character === "LilGuy") {
         circle(this.pX+25, this.pY+30, 20);
@@ -443,6 +450,9 @@ class Enemy {
   }
 
   enemyHitBoxes() {
+    noStroke();
+    fill(R, G, B, ALPHA);
+
     if (opponent === "charger") {
       circle(this.eX+30, this.eY+40, 35);
     }
@@ -515,11 +525,6 @@ function draw() {
     showButton();
   }
 
-  if (state === "enemyIndex") {
-    background(200);
-    showEnemyIndex();
-  }
-
   if (state === "characterChoice") {
     background(220);
     showText();
@@ -561,6 +566,7 @@ function mousePressed() {
     }
     if (mouseX >= cords.rectX2 && mouseX <= cords.rectX2 + cords.w2 && mouseY >= cords.rectY2 && mouseY <= cords.rectY2 + cords.h2) {
       state = "enemyIndex";
+      showEnemyIndex();
     }
   }
   if (state === "characterChoice") {//checks which character is chosen
@@ -661,16 +667,28 @@ function showText() {
   if (state === "startScreen") {
     textSize(25);
     text("Welcome to my horrible copy of the game Hollow Knight", 80, 30);
-    text("Use A and D to move, F to attack.", 200, 80);
+    text("Use A and D to move, F to attack. Press the large button to begin", 50, 80);
     textSize(18);
     text("Explore the rooms, be careful of falling, there are no ladders to get back up.", 70, 300);
     text("Fight off enemies, don't touch them, they bite! You need to defeat your foe before moving on.", 30, 330);
+    text("and be careful.... they come back.", 50, 390 );
+    text ("click this to see the enemy index.", 530, 390);
+    text("---->", 650, 420);
   }
 
   if (state === "enemyIndex") {
-    text();
-    text();
-    text();
+    background(200);
+    fill("white");
+    // titles/names of enemies
+    text("The Jumper", 55, 40);
+    text("The Charger", 320, 40);
+    text("Big Guy...?", 620, 40);
+
+    //descriptions and lore of enemies
+    text("It is said that at one point", 5, 300);
+    text("the 'jumper' was able to jump", 5, 320);
+    text("but time has worn it down, weakened it.", 5, 340);
+
   }
 
   if (state === "play") {
@@ -683,6 +701,7 @@ function showText() {
 }
 
 function showEnemyIndex() {
+  showText();
   image(enemyJ, 50, 50);
   image(enemyC, 300, 50);
   image(enemyBG, 600, 50);
