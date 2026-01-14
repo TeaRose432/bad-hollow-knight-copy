@@ -58,6 +58,7 @@ let greeneryRoomBG;
 let gloomyRoomBG;
 let eggRoomBG;
 let graveYardRoomBG;
+let hasBeenToBG4 = false;
 let theBackGrounds = [];
 let currentBG = 1;
 
@@ -384,7 +385,8 @@ class Player {
       isPlayerHit = false;
     }
     if (this.playerHP < 1) {
-      state = "startScreen";
+      state = "respawnScreen";
+      showButton();
     }
     if (gotHit === true) {
       dmgCooldownCounter += 0.5;
@@ -548,8 +550,18 @@ function draw() {
 function showButton() { //shows the begin button
   stroke("black");
   fill("gray");
-  rect(cords.rectX, cords.rectY, cords.w, cords.h);
-  rect(cords.rectX2, cords.rectY2, cords.w2, cords.h2);
+  if (state === "startScreen") {
+    rect(cords.rectX, cords.rectY, cords.w, cords.h);
+    rect(cords.rectX2, cords.rectY2, cords.w2, cords.h2);
+  }
+  if (state === "respawnScreen") { 
+    background(180);
+    showText();
+    rect(cords.rectX, cords.rectY, cords.w, cords.h);
+    if (hasBeenToBG4 === true) {
+      rect(cords.rectX2, cords.rectY2, cords.w2, cords.h2);
+    }
+  }
 }
 
 function Choices() {//lets player decide which character to play
@@ -679,6 +691,7 @@ function showText() {
   if (state === "enemyIndex") {
     background(200);
     fill("white");
+    textSize(16);
     // titles/names of enemies
     text("The Jumper", 55, 40);
     text("The Charger", 320, 40);
@@ -697,6 +710,10 @@ function showText() {
       fill("white");
       text("oops... looks like you fell.", 30, 50);
     }
+  }
+
+  if (state === "respawnScreen") {
+
   }
 }
 
