@@ -118,6 +118,12 @@ class Player {
     this.playerHP = 3;
   }
 
+  restartGame(newCurrentBG) {
+      currentBG = newCurrentBG;
+      state = "play";
+      this.playerHP = 3;
+  }
+
   backGroundChange() {
     image(theBackGrounds[currentBG], 1, 1);
 
@@ -388,6 +394,7 @@ class Player {
     if (this.playerHP < 1) {
       state = "respawnScreen";
       showButton();
+      showText();
     }
     if (gotHit === true) {
       dmgCooldownCounter += 0.5;
@@ -557,7 +564,6 @@ function showButton() { //shows the begin button
   }
   if (state === "respawnScreen") { 
     background(180);
-    showText();
     rect(cords.rectX, cords.rectY, cords.w, cords.h);
     if (hasBeenToBG4 === true) {
       rect(cords.rectX2, cords.rectY2, cords.w2, cords.h2);
@@ -598,11 +604,21 @@ function mousePressed() {
 
   if (state === "respawnScreen") {//checks if respawn buttons are pressed
     if (mouseX >= cords.rectX && mouseX <= cords.rectX + cords.w && mouseY >= cords.rectY && mouseY <= cords.rectY + cords.h) {
-      restartGame(1);
-      state = "play";
+      if (character ===  "LilGuy") {
+        LilGuy.restartGame(1);
+      }
+      if (character ===  "Hornet") {
+        Hornet.restartGame(1);
+      }
     }
     if (mouseX >= cords.rectX2 && mouseX <= cords.rectX2 + cords.w2 && mouseY >= cords.rectY2 && mouseY <= cords.rectY2 + cords.h2) {
-      restartGame(4);
+      if (character ===  "LilGuy") {
+        LilGuy.restartGame(4);
+      }
+      if (character ===  "Hornet") {
+        Hornet.restartGame(4);
+        
+      }
     }
   }
 }
@@ -725,7 +741,6 @@ function showText() {
   }
 
   if (state === "respawnScreen") {
-    background(180);
     if (character === "Hornet") {
       line(Hornet.pX, Hornet.pY, Hornet.pX+75, Hornet.pY+75);
       line(Hornet.pX+75, Hornet.pY, Hornet.pX-30, Hornet.pY+65);
@@ -750,22 +765,4 @@ function showEnemyIndex() {
   image(enemyJ, 50, 50);
   image(enemyC, 300, 50);
   image(enemyBG, 600, 50);
-}
-
-function restartGame(newCurrentBG) {
-  currentBG = newCurrentBG;
-  state = "play";
-
-  if (character === "LilGuy") {
-    LilGuy.HP = 3;
-    hitBoxCheck();
-    LilGuy.backGroundChange();
-    LilGuy.playerUpdate();
-  }
-  if (character === "Hornet") {
-    Hornet.HP = 3;
-    hitBoxCheck();
-    Hornet.backGroundChange();
-    Hornet.playerUpdate();
-  }
 }
