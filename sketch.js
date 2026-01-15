@@ -204,6 +204,7 @@ class Player {
 
     if (currentBG === 4) {
       this.pY = 355;
+      hasBeenToBG4 = true;
 
       if (hasEnemy === false && enemyKilled === false) {
         BigGuy = new Enemy(cords.enemyX-200, cords.enemyY+170, 1);
@@ -581,6 +582,7 @@ function mousePressed() {
       showEnemyIndex();
     }
   }
+
   if (state === "characterChoice") {//checks which character is chosen
     if (mouseX >= cords.lgX && mouseX <= cords.lgX + lilGuyImg.width*0.2 && mouseY >= cords.lgY && mouseY <= cords.lgY + lilGuyImg.height*0.2) {
       LilGuy = new Player(cords.lgX, cords.lgY, 5);
@@ -591,6 +593,16 @@ function mousePressed() {
       Hornet = new Player(cords.hX, cords.hY, 9);
       character = "Hornet";
       state = "play";
+    }
+  }
+
+  if (state === "respawnScreen") {//checks if respawn buttons are pressed
+    if (mouseX >= cords.rectX && mouseX <= cords.rectX + cords.w && mouseY >= cords.rectY && mouseY <= cords.rectY + cords.h) {
+      restartGame(1);
+      state = "play";
+    }
+    if (mouseX >= cords.rectX2 && mouseX <= cords.rectX2 + cords.w2 && mouseY >= cords.rectY2 && mouseY <= cords.rectY2 + cords.h2) {
+      restartGame(4);
     }
   }
 }
@@ -675,7 +687,7 @@ function hitBoxCheck() {
   }
 }
 
-function showText() {
+function showText() { 
   if (state === "startScreen") {
     textSize(25);
     text("Welcome to my horrible copy of the game Hollow Knight", 80, 30);
@@ -713,7 +725,23 @@ function showText() {
   }
 
   if (state === "respawnScreen") {
+    background(180);
+    if (character === "Hornet") {
+      line(Hornet.pX, Hornet.pY, Hornet.pX+75, Hornet.pY+75);
+      line(Hornet.pX+75, Hornet.pY, Hornet.pX-30, Hornet.pY+65);
+    }
+    if (character === "LilGuy") {
+      line(LilGuy.pX, LilGuy.pY-5, LilGuy.pX+75, LilGuy.pY+75);
+      line(LilGuy.pX+75, LilGuy.pY, LilGuy.pX-30, LilGuy.pY+65);
+    }
 
+    textSize(20);
+    text("you died.", 360, 30);
+    text("click here to respawn at the default spawn.", 220, 140);
+
+    if (hasBeenToBG4 === true) {
+      text("click here if you want to respawn at the checkpoint", 250 ,440);
+    }
   }
 }
 
@@ -722,4 +750,22 @@ function showEnemyIndex() {
   image(enemyJ, 50, 50);
   image(enemyC, 300, 50);
   image(enemyBG, 600, 50);
+}
+
+function restartGame(newCurrentBG) {
+  currentBG = newCurrentBG;
+  state = "play";
+
+  if (character === "LilGuy") {
+    LilGuy.HP = 3;
+    hitBoxCheck();
+    LilGuy.backGroundChange();
+    LilGuy.playerUpdate();
+  }
+  if (character === "Hornet") {
+    Hornet.HP = 3;
+    hitBoxCheck();
+    Hornet.backGroundChange();
+    Hornet.playerUpdate();
+  }
 }
