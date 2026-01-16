@@ -59,6 +59,7 @@ let gloomyRoomBG;
 let eggRoomBG;
 let graveYardRoomBG;
 let hasBeenToBG4 = false;
+let oopsMsgHasBeenShown = false;
 let theBackGrounds = [];
 let currentBG = 1;
 
@@ -211,6 +212,7 @@ class Player {
     if (currentBG === 4) {
       this.pY = 355;
       hasBeenToBG4 = true;
+      oopsMsgHasBeenShown = true;
 
       if (hasEnemy === false && enemyKilled === false) {
         BigGuy = new Enemy(cords.enemyX-200, cords.enemyY+170, 1);
@@ -248,7 +250,7 @@ class Player {
       showText();
 
       if (hasEnemy === false && enemyKilled === false) {
-        Charger = new Enemy(cords.enemyX-120, cords.enemyY+120, 2);
+        Charger = new Enemy(cords.enemyX-120, cords.enemyY+120, 4);
         hasEnemy = true;
       }
       else if (hasEnemy === true) {
@@ -386,6 +388,12 @@ class Player {
   }
 
   playerDamageTaken() {
+    if (this.playerHP > 0) {
+      textSize(20);
+      fill("white");
+      text("player HP: " + this.playerHP, 50, 100);
+    }
+
     if (isPlayerHit === true) {
       this.playerHP -= 1;
       gotHit = true;
@@ -493,19 +501,6 @@ class Enemy {
     }
   }
 
-  enemyAttack() {
-    if (character === LilGuy) {
-      if (opponent === "jumper") {
-        if (LilGuy.pX < this.eX) {
-          enemyDirection = "left";
-        }
-        if (LilGuy.pX > this.eX) {
-          enemyDirection = "right";
-        }
-      }
-    }
-  }
-
   isDead() {
     if (enemyKilled === true) {
       hasEnemy = false;
@@ -515,7 +510,6 @@ class Enemy {
 
   enemyUpdate() {
     this.isDead();
-    this.enemyAttack();
     this.enemyDamageTaken();
     this.enemyMove();
     this.enemyHitBoxes();
@@ -649,6 +643,31 @@ function hitBoxCheck() {
         }
       }
     }
+
+    if (keyIsDown(70) === true) {
+      if (character === "LilGuy") {
+        if (opponent === "jumper") {
+          isPlayerHit = collideCircleCircle(Jumper.eX+20, Jumper.eY+40, 25, LilGuy.pX+20, LilGuy.pY+30, 20);
+        }
+        if (opponent === "charger") {
+          isPlayerHit = collideCircleCircle(Charger.eX+30, Charger.eY+40, 35, LilGuy.pX+20, LilGuy.pY+30, 20);
+        }
+        if (opponent === "big guy") {
+          isPlayerHit = collideCircleCircle(BigGuy.eX, BigGuy.eY, 35, LilGuy.pX+20, LilGuy.pY+30, 20);
+        }
+      }
+      if (character === "Hornet") {
+        if (opponent === "jumper") {
+          isPlayerHit = collideCircleCircle(Jumper.eX+20, Jumper.eY+40, 25, Hornet.pX+25, Hornet.pY+35, 20);
+        }
+        if (opponent === "charger") {
+          isPlayerHit = collideCircleCircle(Charger.eX+30, Charger.eY+40, 35, Hornet.pX+25, Hornet.pY+35, 20);
+        }
+        if (opponent === "big guy") {
+          isPlayerHit = collideCircleCircle(BigGuy.eX+20, BigGuy.eY+25, 35, Hornet.pX+25, Hornet.pY+35, 20);
+        }
+      }
+    }
   
     if (keyIsDown(70) === true) {
       if (character === "LilGuy") {
@@ -717,22 +736,36 @@ function showText() {
   }
 
   if (state === "enemyIndex") {
-    background(200);
-    fill("white");
+    background(170);
+    fill("purple");
+    textSize(20);
+    text("refresh to leave the index!", 5, 420); 
     textSize(16);
+
     // titles/names of enemies
     text("The Jumper", 55, 40);
     text("The Charger", 320, 40);
     text("Big Guy...?", 620, 40);
 
     //descriptions and lore of enemies
+      // the jumper
+    fill("red");
     text("It is said that at one point", 5, 300);
     text("the 'jumper' was able to jump", 5, 320);
     text("but time has worn it down, weakened it.", 5, 340);
-
+      // the charger
+    fill("blue");
+    text("The charger charges at people... of course", 220, 250);
+    text("it and the jumper seem to protect big guy..", 220, 270);
+    text("they protect the weak it seems.", 220, 290);
+      // the big guy
+    fill("green");
+    textSize(15);
+    text("a defenseless creature, weak and soft.", 525, 210);
+    text("named 'big guy' to boost their confidence", 525, 230);
   }
 
-  if (state === "play") {
+  if (state === "play" && oopsMsgHasBeenShown === false) {
     if (currentBG === 3 || currentBG === 5) {
       textSize(24);
       fill("white");
@@ -757,6 +790,14 @@ function showText() {
     if (hasBeenToBG4 === true) {
       text("click here if you want to respawn at the checkpoint", 250 ,440);
     }
+  }
+
+  if (state === "characterChoice") {
+    textSize(22);
+    text("Choose your player to play as!", 250, 20);
+    textSize(18);
+    text("Hornet here is fast, with a shorter range.", 460, 190);
+    text("Lil Guy is slower with a longer range.", 50, 190);
   }
 }
 
