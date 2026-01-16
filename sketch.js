@@ -120,9 +120,9 @@ class Player {
   }
 
   restartGame(newCurrentBG) {
-      currentBG = newCurrentBG;
-      state = "play";
-      this.playerHP = 3;
+    currentBG = newCurrentBG;
+    state = "play";
+    this.playerHP = 3;
   }
 
   backGroundChange() {
@@ -748,17 +748,17 @@ function showText() {
     text("Big Guy...?", 620, 40);
 
     //descriptions and lore of enemies
-      // the jumper
+    // the jumper
     fill("red");
     text("It is said that at one point", 5, 300);
     text("the 'jumper' was able to jump", 5, 320);
     text("but time has worn it down, weakened it.", 5, 340);
-      // the charger
+    // the charger
     fill("blue");
     text("The charger charges at people... of course", 220, 250);
     text("it and the jumper seem to protect big guy..", 220, 270);
     text("they protect the weak it seems.", 220, 290);
-      // the big guy
+    // the big guy
     fill("green");
     textSize(15);
     text("a defenseless creature, weak and soft.", 525, 210);
