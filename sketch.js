@@ -5,9 +5,10 @@
 //I used ps.j5 refernece website to learn parameters and what functions need/do.
 //I also used to to help decide what to use between choices like mousePressed or mouseClicked.
 //used for functions such as:
-//triangle, keyIsDown, mousePressed, keyPressed, image
+//line, keyIsDown, mousePressed, keyPressed, image
 //https://github.com/bmoren/p5.collide2D --- I used this to figure out how to use p5.collide properly
 
+// various cordinates used throughout the project
 let cords = {
   lgX: 100,
   lgY: 200,
@@ -25,6 +26,7 @@ let cords = {
   h2: 50,
 };
 
+//setup and miscilanious variables
 const CANVASWIDTH = 800;
 const CANVASHEIGHT = 450;
 const INVULNERABILITY = 10;
@@ -52,6 +54,7 @@ let Charger;
 let Jumper;
 let BigGuy;
 
+//background related variables
 let startingRoomBG;
 let statueRoomBG;
 let greeneryRoomBG;
@@ -63,7 +66,8 @@ let oopsMsgHasBeenShown = false;
 let theBackGrounds = [];
 let currentBG = 1;
 
-let lgStand;//setting up character movement and idle animations
+//setting up character movement and idle animations
+let lgStand;
 let lgStandRight;
 let lgRun;
 let lgRunRight;
@@ -77,6 +81,7 @@ let hornetAttackRight;
 let lgAttack;
 let lgAttackRight;
 let dmgCooldownCounter = 0;
+let enemydmgCooldownCounter = 0;
 let isPlayerHit = false;
 let isEnemyHit = false;
 let gotHit = false;
@@ -119,12 +124,14 @@ class Player {
     this.playerHP = 3;
   }
 
+  //after a respawn button is pressed, restarts the game
   restartGame(newCurrentBG) {
-      currentBG = newCurrentBG;
-      state = "play";
-      this.playerHP = 3;
+    currentBG = newCurrentBG;
+    state = "play";
+    this.playerHP = 3;
   }
 
+  //changes the background and sets up enemies and certain varibales like hasBeenToBG4
   backGroundChange() {
     image(theBackGrounds[currentBG], 1, 1);
 
@@ -279,6 +286,7 @@ class Player {
     }
   }
 
+  //handles the attack animations
   playerAttack() {
     if (keyIsDown(70) === true) {
       if (character === "LilGuy") {
@@ -301,6 +309,7 @@ class Player {
     }
   }
 
+  //creates hitboxes used for collison and damage taken
   playerHitBoxes() {
     noStroke();
     fill(R, G, B, ALPHA);
@@ -341,6 +350,7 @@ class Player {
     }
   }
 
+  //handles movement and idles for players based on key presses
   playerMove() {
     if (keyIsDown(70) === false) {
       if (character === "LilGuy") {
@@ -387,6 +397,7 @@ class Player {
     }
   }
 
+  //this is for taking damage and handling invulnerability counters
   playerDamageTaken() {
     if (this.playerHP > 0) {
       textSize(20);
@@ -413,6 +424,7 @@ class Player {
     }
   }
 
+  //the functions go here to keep the draw loop cleaner
   playerUpdate() {
     this.playerDamageTaken();
     this.playerMove();
@@ -429,6 +441,7 @@ class Enemy {
     this.enemyHP = 3;
   }
 
+  //based on what the opponent is set to, this handles their movement. opponent is set in background change
   enemyMove() {
     if (this.eX <= 70) {
       enemyDirection = "right";
@@ -467,6 +480,7 @@ class Enemy {
     }
   }
 
+  //handles the hitboxes based on what enemy is there
   enemyHitBoxes() {
     noStroke();
     fill(R, G, B, ALPHA);
@@ -483,6 +497,7 @@ class Enemy {
     }
   }
 
+  //allows the enemy to be killed and handles invulnerability counter
   enemyDamageTaken() {
     if (isEnemyHit === true) {
       this.enemyHP -= 0.5;
@@ -493,21 +508,23 @@ class Enemy {
       enemyKilled = true;
     }
     if (gotHit === true) {
-      dmgCooldownCounter + 0.5;
+      enemydmgCooldownCounter + 0.5;
     }
-    if (dmgCooldownCounter >= INVULNERABILITY) {
-      dmgCooldownCounter = 0;
+    if (enemydmgCooldownCounter >= INVULNERABILITY) {
+      enemydmgCooldownCounter = 0;
       gotHit = false;
     }
   }
 
+  //makes the opponent dissapear when dead so they cant continue to damage the player
   isDead() {
     if (enemyKilled === true) {
       hasEnemy = false;
-      opponent = " ";
+      opponent = " "; 
     }
   }
 
+  //updates enemy functions to keep draw loop clear
   enemyUpdate() {
     this.isDead();
     this.enemyDamageTaken();
@@ -516,12 +533,15 @@ class Enemy {
   }
 }
 
+//setting up the canvas and creating the map formation
 function setup() {
   createCanvas(CANVASWIDTH, CANVASHEIGHT);
+  //the indentation is to make it clear what is part of the array, sorry about the error
   theBackGrounds = [eggRoomBG , startingRoomBG, greeneryRoomBG,
                     statueRoomBG, gloomyRoomBG, graveYardRoomBG];
 }
 
+//draws the game depending on the state and player
 function draw() {
   if (state === "startScreen") {
     background(220);
@@ -549,13 +569,17 @@ function draw() {
   }
 }
 
-function showButton() { //shows the begin button
+//shows buttons for certain states of game to begin or respawn
+function showButton() { 
+  //shows the begin button and enemy index button
   stroke("black");
   fill("gray");
   if (state === "startScreen") {
     rect(cords.rectX, cords.rectY, cords.w, cords.h);
     rect(cords.rectX2, cords.rectY2, cords.w2, cords.h2);
   }
+
+  //shows the buttons for respawning based on room/checkpoint
   if (state === "respawnScreen") { 
     background(180);
     rect(cords.rectX, cords.rectY, cords.w, cords.h);
@@ -567,22 +591,26 @@ function showButton() { //shows the begin button
 
 function Choices() {//lets player decide which character to play
   if (state === "characterChoice") {
+    //shows the choices and created the buttons to press
     image(lilGuyImg, cords.lgX, cords.lgY, lilGuyImg.width*0.2, lilGuyImg.height*0.2);
     image(hornetImg, cords.hX, cords.hY, hornetImg.width*0.2, hornetImg.height*0.23);
   }
 }
 
 function mousePressed() {
-  if (state === "startScreen") {//checks if start button is pressed
+  if (state === "startScreen") {//checks if start button is pressed to begin characterchoice
     if (mouseX >= cords.rectX && mouseX <= cords.rectX + cords.w && mouseY >= cords.rectY && mouseY <= cords.rectY + cords.h) {
       state = "characterChoice";
     }
+
+    //checks if the enemy index button is pressed to bring them to the index
     if (mouseX >= cords.rectX2 && mouseX <= cords.rectX2 + cords.w2 && mouseY >= cords.rectY2 && mouseY <= cords.rectY2 + cords.h2) {
       state = "enemyIndex";
       showEnemyIndex();
     }
   }
 
+  //creates the player based on who is chosen
   if (state === "characterChoice") {//checks which character is chosen
     if (mouseX >= cords.lgX && mouseX <= cords.lgX + lilGuyImg.width*0.2 && mouseY >= cords.lgY && mouseY <= cords.lgY + lilGuyImg.height*0.2) {
       LilGuy = new Player(cords.lgX, cords.lgY, 5);
@@ -596,7 +624,9 @@ function mousePressed() {
     }
   }
 
+  //respawns and restarts the game based on what button is pressed(decides what room the player respawns in)
   if (state === "respawnScreen") {//checks if respawn buttons are pressed
+    //for the main starting room
     if (mouseX >= cords.rectX && mouseX <= cords.rectX + cords.w && mouseY >= cords.rectY && mouseY <= cords.rectY + cords.h) {
       if (character ===  "LilGuy") {
         LilGuy.restartGame(1);
@@ -605,6 +635,7 @@ function mousePressed() {
         Hornet.restartGame(1);
       }
     }
+    //for the checkpoint room
     if (mouseX >= cords.rectX2 && mouseX <= cords.rectX2 + cords.w2 && mouseY >= cords.rectY2 && mouseY <= cords.rectY2 + cords.h2) {
       if (character ===  "LilGuy") {
         LilGuy.restartGame(4);
@@ -617,8 +648,10 @@ function mousePressed() {
   }
 }
 
+//this checks for the collsion of players and enemies so damage can be taken accordingly
 function hitBoxCheck() {
   if (dmgCooldownCounter === 0) {
+    //this checks if player is hit while not attacking
     if (keyIsDown(70) === false) {
       if (character === "LilGuy") {
         if (opponent === "jumper") {
@@ -644,6 +677,7 @@ function hitBoxCheck() {
       }
     }
 
+    //this checks if player is hit while attacking
     if (keyIsDown(70) === true) {
       if (character === "LilGuy") {
         if (opponent === "jumper") {
@@ -669,6 +703,7 @@ function hitBoxCheck() {
       }
     }
   
+    //this remainig part checks if enemies are hit by the player
     if (keyIsDown(70) === true) {
       if (character === "LilGuy") {
         if (direction === "left") {
@@ -722,7 +757,9 @@ function hitBoxCheck() {
   }
 }
 
+//shows the neccesariy instruction, notice, and information text
 function showText() { 
+  //shows the instruction text for main screen
   if (state === "startScreen") {
     textSize(25);
     text("Welcome to my horrible copy of the game Hollow Knight", 80, 30);
@@ -735,6 +772,7 @@ function showText() {
     text("---->", 650, 420);
   }
 
+  //states the names and lore of enemies, and how toleave the index
   if (state === "enemyIndex") {
     background(170);
     fill("purple");
@@ -748,23 +786,24 @@ function showText() {
     text("Big Guy...?", 620, 40);
 
     //descriptions and lore of enemies
-      // the jumper
+    // the jumper
     fill("red");
     text("It is said that at one point", 5, 300);
     text("the 'jumper' was able to jump", 5, 320);
     text("but time has worn it down, weakened it.", 5, 340);
-      // the charger
+    // the charger
     fill("blue");
     text("The charger charges at people... of course", 220, 250);
     text("it and the jumper seem to protect big guy..", 220, 270);
     text("they protect the weak it seems.", 220, 290);
-      // the big guy
+    // the big guy
     fill("green");
     textSize(15);
     text("a defenseless creature, weak and soft.", 525, 210);
     text("named 'big guy' to boost their confidence", 525, 230);
   }
 
+  //lets the player know they have fallen to a lower level
   if (state === "play" && oopsMsgHasBeenShown === false) {
     if (currentBG === 3 || currentBG === 5) {
       textSize(24);
@@ -773,7 +812,9 @@ function showText() {
     }
   }
 
+  //crosses out the player to show they are dead, and says what to click to respawn where(if you unlocked the checkpoint)
   if (state === "respawnScreen") {
+    //crossing the player out
     if (character === "Hornet") {
       line(Hornet.pX, Hornet.pY, Hornet.pX+75, Hornet.pY+75);
       line(Hornet.pX+75, Hornet.pY, Hornet.pX-30, Hornet.pY+65);
@@ -784,6 +825,7 @@ function showText() {
     }
 
     textSize(20);
+    //the respawn button texts
     text("you died.", 360, 30);
     text("click here to respawn at the default spawn.", 220, 140);
 
@@ -792,6 +834,7 @@ function showText() {
     }
   }
 
+  //gives information on the players and intructs the user to choose
   if (state === "characterChoice") {
     textSize(22);
     text("Choose your player to play as!", 250, 20);
@@ -801,6 +844,7 @@ function showText() {
   }
 }
 
+//shows the images for the enemy index and calls for the information text to be shown
 function showEnemyIndex() {
   showText();
   image(enemyJ, 50, 50);
