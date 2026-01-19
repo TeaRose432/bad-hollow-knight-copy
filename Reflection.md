@@ -6,11 +6,12 @@
     - I often found myself trying to make each stage and thing I was doing perfect which was not smart, it cost me alot of time until
     - I finally stopped, and just made sure the basics worked and were presentable
     - ask questions to the teacher more instead of spending hours trying to figure out one thing(it feels worth it in the end but it takes so much time).
+    - Plan it out, try to set myself a path. I often spent a bit trying to figure out what to do next, so a rough outline would have saved me a bit of time.
 
 
 ### Question 2
 - Did I complete everything in my needs to have?
-    - Yes I did! I didnt get attack animations for the enemies, but when writing the proposal I meant the players, I just failed to speficy.
+    - Yes I did, well technically...! I didnt get attack animations for the enemies, but when writing the proposal I meant the players, I just failed to speficy.
     - Also I couldnt find the animations for the life of me, so I would say yes I did.
     - But im proud of what I got done with getting sick, and having to move. I still got everything needed done, and even added an enemy index which wasnt needed.
 

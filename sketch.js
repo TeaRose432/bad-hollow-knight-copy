@@ -537,6 +537,7 @@ class Enemy {
 //setting up the canvas and creating the map formation
 function setup() {
   createCanvas(CANVASWIDTH, CANVASHEIGHT);
+  
   //the indentation is to make it clear what is part of the array, sorry about the error
   theBackGrounds = [eggRoomBG , startingRoomBG, greeneryRoomBG,
                     statueRoomBG, gloomyRoomBG, graveYardRoomBG];
