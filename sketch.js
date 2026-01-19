@@ -7,6 +7,7 @@
 //used for functions such as:
 //line, keyIsDown, mousePressed, keyPressed, image
 //https://github.com/bmoren/p5.collide2D --- I used this to figure out how to use p5.collide properly
+//I don't really have a extra for experts, I feel the closest thing I have is not using many sources?
 
 // various cordinates used throughout the project
 let cords = {
